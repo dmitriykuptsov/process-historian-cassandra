@@ -82,7 +82,7 @@ def add_data():
     points = data.get("points", {})
 
     for sensor in points:
-        tag = sensor.keys()[0]
+        tag = list(sensor.keys())[0]
         print("Doing tag: %s" (tag))
         sensor = db.session.query(Sensors).\
             filter(db.and_(Sensors.tag.ilike(tag))). \
