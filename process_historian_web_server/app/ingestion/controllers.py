@@ -81,7 +81,8 @@ def add_data():
     
     points = data.get("points", {})
 
-    for tag in points.keys():
+    for sensor in points:
+        tag = sensor.keys()[0]
         print("Doing tag: %s" (tag))
         sensor = db.session.query(Sensors).\
             filter(db.and_(Sensors.tag.ilike(tag))). \
@@ -94,7 +95,7 @@ def add_data():
         insert_points = session.prepare('INSERT INTO ph (tag, date_bucket, ts, value) VALUES (?, ?, ?, ?, ?)')
         batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
 
-        for p in points[tag]:
+        for p in sensor[tag]:
             try:
                 date_object = datetime.fromtimestamp(p["timestamp"])
                 bucket = date_object.strftime("%Y-%m-%d")
