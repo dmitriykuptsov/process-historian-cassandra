@@ -26,11 +26,6 @@ from app.utils.utils import is_valid_session, hash_password, get_subject
 from app.utils.utils import hash_string
 from app.utils.utils import hash_bytes
 
-# Pandas
-import pandas as pd
-# XLX file handling
-import openpyxl
-
 # Datetime utilities
 from datetime import date
 from datetime import datetime
