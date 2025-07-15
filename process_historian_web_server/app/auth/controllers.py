@@ -39,7 +39,7 @@ def signin():
         if not data:
             return jsonify({
                 "success": False
-            }, 200)
+            })
         salt = hexlify(os.urandom(32))
         user = Users.query.filter_by(username=data.get("username", None)).first()
         
@@ -48,24 +48,24 @@ def signin():
             return jsonify({
                 "token": token,
                 "success": True
-            }, 200)
+            })
         else:
             return jsonify({
                 "success": False
-            }, 200)
+            })
 
 @mod_auth.route("/logout/", methods=["GET"])
 def logout():
     return jsonify({
         "success": True
-    }, 200)
+    })
 
 @mod_auth.route("/validate_token/", methods=["POST"])
 def validate_token():
     token = get_auth_token(request)
     return jsonify({
         "valid": is_valid_auth_token(token, config_["SERVER_NONCE"], config_["TOKEN_KEY"])
-    }, 200)
+    })
 
 @mod_auth.route("/renew_token/", methods = ["POST"])
 def renew_token():
@@ -75,13 +75,13 @@ def renew_token():
     if payload["server_nonce"] != config_["SERVER_NONCE"]:
         return jsonify({
             "success": False
-        }, 403)
+        })
     if is_valid_auth_token(token, config_["SERVER_NONCE"], config_["TOKEN_KEY"]):
         token = encode_jwt(payload["subject"], salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
         return jsonify({
             "token": token,
             "success": True
-        }, 200)
+        })
     return jsonify({
         "success": False
-    }, 403)
+    })
