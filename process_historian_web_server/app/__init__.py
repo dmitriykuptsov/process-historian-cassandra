@@ -39,8 +39,10 @@ def index():
 # Import a module / component using its blueprint handler variable
 from app.auth.controllers import mod_auth
 from app.api.controllers import mod_api
-
+from app.ingestion.controllers import mod_injection
 # Register blueprint(s)
 app.register_blueprint(mod_auth)
 app.register_blueprint(mod_api)
+app.register_blueprint(mod_injection)
+
 
