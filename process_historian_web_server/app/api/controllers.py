@@ -182,8 +182,8 @@ def delete_sensor():
         "result": True
     })
 
-@mod_api.route("/get_date_raw/", methods=["POST"])
-def get_date_raw():
+@mod_api.route("/get_data_raw/", methods=["POST"])
+def get_data_raw():
     if not is_valid_session(request, config):
         return jsonify({"auth_fail": True})
     data = request.get_json(force=True)
