@@ -112,29 +112,3 @@ def add_data():
         "result": True
     })
 
-@mod_injection.route("/get_sensors_by_attributes/", methods=["POST"])
-def get_sensors():
-    if not is_valid_session(request, config):
-        return jsonify({"auth_fail": True})
-    data = request.get_json(force=True)
-    if not data:
-        return jsonify({"auth_fail": False, "result": False})
-    
-    attributes = data.get("attributes", [])
-
-    sensors = db.session.query(Attributes).\
-        filter(db.and_(Sensors.tag.in_(attributes))). \
-            all()
-
-    result = {}
-    for sensor in sensors:
-        result[sensor.tag] = True
-
-    tags = []
-    for r in result.keys():
-        tags.append(r)
-
-    return jsonify({
-        "auth_fail": False,
-        "result": tags
-    })
