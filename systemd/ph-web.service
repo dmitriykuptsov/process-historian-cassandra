@@ -1,0 +1,16 @@
+[Unit]
+Description=Process Historian Web Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=www-data
+
+WorkingDirectory=/opt/ph/
+ExecStart=/usr/bin/python3 /opt/ph/run.py
+
+[Install]
+WantedBy=multi-user.target
