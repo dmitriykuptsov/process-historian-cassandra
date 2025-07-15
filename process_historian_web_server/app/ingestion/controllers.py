@@ -83,16 +83,16 @@ def add_data():
 
     for sensor in points:
         tag = list(sensor.keys())[0]
-        print("Doing tag: %s" (tag))
-        sensor = db.session.query(Sensors).\
+        print("Doing tag: " + tag)
+        sensor_ = db.session.query(Sensors).\
             filter(db.and_(Sensors.tag.ilike(tag))). \
                 first()
         
-        if not sensor:
+        if not sensor_:
             print("Sensor was not found in the database")
             continue
 
-        insert_points = session.prepare('INSERT INTO ph (tag, date_bucket, ts, value) VALUES (?, ?, ?, ?, ?)')
+        insert_points = session.prepare('INSERT INTO ph (tag, date_bucket, ts, value) VALUES (?, ?, ?, ?)')
         batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
 
         for p in sensor[tag]:
