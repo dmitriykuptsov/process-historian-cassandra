@@ -201,9 +201,6 @@ def get_data_raw():
 
     tag = data.get("tag", None)
 
-    print(tag)
-    print(data)
-
     format_string = "%Y-%m-%d %H:%M:%S"
 
     start = data.get("start", None)
@@ -241,3 +238,4 @@ def get_data_raw():
         "auth_fail": False,
         "result": result
     })
+

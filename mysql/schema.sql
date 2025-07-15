@@ -23,4 +23,4 @@ create table if not exists Attributes (
         ON DELETE CASCADE
 );
 
-INSERT INTO Polzovateli(username, password, salt) VALUES("admin", SHA2(CONCAT("password", "DanWocsAtAv8"), 256), "DanWocsAtAv8");
+INSERT INTO Users(username, password, salt) VALUES("admin", SHA2(CONCAT("password", "DanWocsAtAv8"), 256), "DanWocsAtAv8");
