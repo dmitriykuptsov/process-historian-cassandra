@@ -82,11 +82,13 @@ def add_data():
     points = data.get("points", {})
 
     for tag in points.keys():
+        print("Doing tag: %s" (tag))
         sensor = db.session.query(Sensors).\
             filter(db.and_(Sensors.tag.ilike(tag))). \
                 first()
         
         if not sensor:
+            print("Sensor was not found in the database")
             continue
 
         insert_points = session.prepare('INSERT INTO ph (tag, date_bucket, ts, value) VALUES (?, ?, ?, ?, ?)')
