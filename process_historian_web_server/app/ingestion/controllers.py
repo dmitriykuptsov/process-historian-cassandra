@@ -71,7 +71,7 @@ cluster = Cluster(config["CASSANDRA_NODES"])
 session = cluster.connect(config["CASSANDRA_KEYSPACE"])
 
 
-@mod_api.route("/add_data/", methods=["POST"])
+@mod_injection.route("/add_data/", methods=["POST"])
 def add_data():
     if not is_valid_session(request, config):
         return jsonify({"auth_fail": True})
@@ -106,7 +106,7 @@ def add_data():
         "result": True
     })
 
-@mod_api.route("/get_sensors_by_attributes/", methods=["POST"])
+@mod_injection.route("/get_sensors_by_attributes/", methods=["POST"])
 def get_sensors():
     if not is_valid_session(request, config):
         return jsonify({"auth_fail": True})
