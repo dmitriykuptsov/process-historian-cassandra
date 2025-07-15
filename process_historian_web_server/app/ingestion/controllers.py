@@ -97,7 +97,7 @@ def add_data():
 
         for p in sensor[tag]:
             try:
-                date_object = datetime.fromtimestamp(p["timestamp"])
+                date_object = datetime.fromtimestamp(float(p["timestamp"]) / 1000)
                 bucket = date_object.strftime("%Y-%m-%d")
                 print("Inserting the value into the Cassandra cluster")
                 print(bucket)
