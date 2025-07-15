@@ -6,6 +6,12 @@ class PHClient():
     def __init__(self, url, tag):
         self.url = url
         self.tag = tag
+    def create_tag(self):
+        result = self.session.post(self.url + "/api/add_sensor/", 
+                    json={"tag": self.tag, "description": "", "secret": ""}, 
+                    headers={"Accept": "application/json",
+                            "Authorization": "Bearer " + self.token})
+        print(result.text)
     def open(self):
         self.session = requests.session()
         result = self.session.post(self.url + "/auth/signin/", 
@@ -33,6 +39,7 @@ class PHClient():
             e = time()
             print("Inserting " + str(batch_size) + " a batch took " + str(e-s) + " seconds")
             print(str(batch_size/(e-s)) + " samples per second")
-c = PHClient("http://192.168.1.245:5006", "test")
+c = PHClient("http://192.168.1.245:5006", "test2")
 c.open()
+c.create_tag()
 c.run_batch_insert(10000, 100)
