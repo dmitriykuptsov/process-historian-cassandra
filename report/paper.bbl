@@ -1,0 +1,8 @@
+\begin{thebibliography}{1}
+
+\bibitem{git}
+D.~Kuptsov.
+\newblock {Simple Process Historian database}.
+\newblock \url{https://github.com/dmitriykuptsov/process-historian-cassandra}.
+
+\end{thebibliography}

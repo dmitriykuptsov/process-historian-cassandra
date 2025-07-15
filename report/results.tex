@@ -1,0 +1,28 @@
+\section{Data processing and basic results}
+\label{section:results}
+
+\begin{table*}[h!]
+  \caption{Distribution of non IPv4 frames}
+  \label{tab:non:ipv4:frames}
+  \centering
+  \begin{tabular}{lcc}
+    \hline
+    {\bf Protocol}                                   & {\bf Number of frames } & {\bf Fraction (\%)} \\
+    \hline
+    ARP                                              & 136857                  & 48.8 \\
+    Cisco Shared Spanning Tree Protocol              & 119385                  & 42.5 \\    
+    IPv6                                             & 17034                   & 6.1  \\
+    Spanning Tree Protocol (IEEE 802.1D)             & 4774                    & 1.7  \\
+    IPX                                              & 1164                    & 0.4  \\
+    Cisco Loop                                       & 957                     & 0.3  \\
+    Cisco CDP/VTP                                    & 510                     & 0.2  \\
+  \end{tabular}
+\end{table*}
+
+
+\begin{figure}[!hbt]\centering
+  \includegraphics[width=0.45\textwidth]{graphics/1tag.dist.write.pdf}
+  \caption{Number of datapoints written per second}
+  \label{fig:write:1tag}
+\end{figure}
+
