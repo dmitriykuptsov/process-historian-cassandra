@@ -83,7 +83,6 @@ def add_data():
 
     for sensor in points:
         tag = list(sensor.keys())[0]
-        print("Doing tag: " + tag)
         sensor_ = db.session.query(Sensors).\
             filter(db.and_(Sensors.tag.ilike(tag))). \
                 first()
@@ -99,15 +98,13 @@ def add_data():
             try:
                 date_object = datetime.fromtimestamp(float(p["timestamp"]) / 1000)
                 bucket = date_object.strftime("%Y-%m-%d")
-                print("Inserting the value into the Cassandra cluster")
-                print(bucket)
-                print(tag)
-                print(p["timestamp"])
-                print(p["value"])
                 batch.add(insert_points,(tag, bucket, p["timestamp"],p["value"]))
             except Exception as e:
                 print(e)
-                pass
+                return jsonify({
+                    "auth_fail": False,
+                    "result": False
+                })
         session.execute(batch)
 
     return jsonify({
