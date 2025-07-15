@@ -96,8 +96,14 @@ def add_data():
             try:
                 date_object = datetime.fromtimestamp(p["timestamp"])
                 bucket = date_object.strftime("%Y-%m-%d")
+                print("Inserting the value into the Cassandra cluster")
+                print(bucket)
+                print(tag)
+                print(p["timestamp"])
+                print(p["value"])
                 batch.add(insert_points,(tag, bucket, p["timestamp"],p["value"]))
             except Exception as e:
+                print(e)
                 pass
         session.execute(batch)
 
