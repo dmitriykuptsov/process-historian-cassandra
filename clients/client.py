@@ -20,9 +20,6 @@ class PHClient():
                                     headers={"Accept": "application/json"})
         self.token = loads(result.text)["token"]
     def run_batch_insert(self, batch_size=1000, num_rounds=100):
-
-        
-        # '{"points": [{"test": [{"timestamp": 1752599157688, "value": 5.445}]}]}'
         for j in range(0, num_rounds):
             s = time()
             batch = {"points": [{self.tag: []}]}
@@ -35,7 +32,6 @@ class PHClient():
                     json=batch, 
                     headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
-            #print(result.text)
             e = time()
             print("Inserting " + str(batch_size) + " a batch took " + str(e-s) + " seconds")
             print(str(batch_size/(e-s)) + " samples per second")
