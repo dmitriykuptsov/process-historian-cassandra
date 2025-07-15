@@ -15,7 +15,7 @@ from app import db
 from app import config_
 
 # Import module models (i.e. User)
-from app.auth.models import Polzovateli
+from app.auth.models import Users
 
 # Secrets
 import secrets
@@ -41,10 +41,10 @@ def signin():
                 "success": False
             }, 200)
         salt = hexlify(os.urandom(32))
-        user = Polzovateli.query.filter_by(imya=data.get("username", None)).first()
+        user = Users.query.filter_by(username=data.get("username", None)).first()
         
-        if user and check_password(data.get("password", "").encode("UTF-8"), user.sol.encode("UTF-8"), user.parol.encode("UTF-8")):
-            token = encode_jwt(user.imya, user.rol_id, salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
+        if user and check_password(data.get("password", "").encode("UTF-8"), user.salt.encode("UTF-8"), user.password.encode("UTF-8")):
+            token = encode_jwt(user.username, salt.decode("UTF-8"), config_["SERVER_NONCE"], config_["JWT_VALIDITY_IN_DAYS"], config_["TOKEN_KEY"])
             return jsonify({
                 "token": token,
                 "success": True

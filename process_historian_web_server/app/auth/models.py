@@ -1,6 +1,6 @@
 from app import db
 
-class Roli(db.Model):
+class Users(db.Model):
     __tablename__ = "Users"
     
     username = db.Column(db.String(100), nullable=False, primary_key = True)

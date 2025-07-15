@@ -6,7 +6,7 @@ import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Define the database 
-SQLALCHEMY_DATABASE_URI = "mysql://root:password@192.168.1.245/ph"
+SQLALCHEMY_DATABASE_URI = "mysql://ph:password@192.168.1.245/ph"
 
 DATABASE_CONNECT_OPTIONS = {}
 

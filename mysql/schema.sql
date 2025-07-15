@@ -22,3 +22,5 @@ create table if not exists Attributes (
         REFERENCES Sensors(tag) 
         ON DELETE CASCADE
 );
+
+INSERT INTO Polzovateli(username, password, salt) VALUES("admin", SHA2(CONCAT("password", "DanWocsAtAv8"), 256), "DanWocsAtAv8");

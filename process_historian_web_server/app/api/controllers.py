@@ -26,11 +26,6 @@ from app.utils.utils import is_valid_session, hash_password, get_subject
 from app.utils.utils import hash_string
 from app.utils.utils import hash_bytes
 
-# Pandas
-import pandas as pd
-# XLX file handling
-import openpyxl
-
 # Datetime utilities
 from datetime import date
 
@@ -65,10 +60,10 @@ from Crypto.Hash import SHA256
 mod_api = Blueprint("api", __name__, url_prefix="/api")
 
 # Cassandra cluster configuration
-from cassandra.cluster import Cluster
+#from cassandra.cluster import Cluster
 
-cluster = Cluster(config["CASSANDRA_NODES"])
-session = cluster.connect(config["CASSANDRA_KEYSPACE"])
+#cluster = Cluster(config["CASSANDRA_NODES"])
+#session = cluster.connect(config["CASSANDRA_KEYSPACE"])
 
 @mod_api.route("/get_sensors/", methods=["POST"])
 def get_sensors():
@@ -78,7 +73,9 @@ def get_sensors():
     if not data:
         return jsonify({"auth_fail": False, "result": False})
     
-    tag = data.get("tag", "%%")
+    tag = data.get("tag", "")
+
+    tag = "%" + tag + "%";
 
     sensors = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
