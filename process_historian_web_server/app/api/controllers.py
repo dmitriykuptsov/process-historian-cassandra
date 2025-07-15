@@ -62,6 +62,15 @@ mod_api = Blueprint("api", __name__, url_prefix="/api")
 # Cassandra cluster configuration
 from cassandra.cluster import Cluster
 
+# Date time functions
+from datetime import date, timedelta
+
+# Cassandra cluster configuration
+from cassandra.cluster import Cluster
+from cassandra.query import BatchStatement, SimpleStatement
+from cassandra import ConsistencyLevel
+
+
 cluster = Cluster(config["CASSANDRA_NODES"])
 session = cluster.connect(config["CASSANDRA_KEYSPACE"])
 
@@ -189,20 +198,46 @@ def get_data_raw():
     data = request.get_json(force=True)
     if not data:
         return jsonify({"auth_fail": False, "result": False})
-    
+
     tag = data.get("tag", None)
+
+    print(tag)
+    print(data)
+
+    format_string = "%Y-%m-%d %H:%M:%S"
 
     start = data.get("start", None)
     end = data.get("end", None)
 
+    start = datetime.strptime(start, format_string)
+    end = datetime.strptime(end, format_string)
+
+    ts_start = int(start.timestamp() * 1000)
+    ts_end = int(end.timestamp() * 1000)
+
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
             first()
-    
-    if sensor:
+
+    if not sensor:
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
+	
+    buckets = []
+    current_date = start
+    while current_date <= end:
+        formatted_date = current_date.strftime("%Y-%m-%d")
+        buckets.append((tag, formatted_date))
+        current_date += timedelta(days=1)
+
+    query = "SELECT ts, value FROM ph WHERE tag = %s AND date_bucket = %s AND ts >= %s AND ts <= %s"
+    result = []
+
+    for bucket in buckets:
+        rows = session.execute(query, (bucket[0], bucket[1], ts_start, ts_end, ))
+        for row in rows:
+            result.append({"timestamp": row[0].timestamp(), "value": row[1]})
 
     return jsonify({
         "auth_fail": False,
-        "result": True
+        "result": result
     })
