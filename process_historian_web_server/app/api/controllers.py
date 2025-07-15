@@ -60,10 +60,10 @@ from Crypto.Hash import SHA256
 mod_api = Blueprint("api", __name__, url_prefix="/api")
 
 # Cassandra cluster configuration
-#from cassandra.cluster import Cluster
+from cassandra.cluster import Cluster
 
-#cluster = Cluster(config["CASSANDRA_NODES"])
-#session = cluster.connect(config["CASSANDRA_KEYSPACE"])
+cluster = Cluster(config["CASSANDRA_NODES"])
+session = cluster.connect(config["CASSANDRA_KEYSPACE"])
 
 @mod_api.route("/get_sensors/", methods=["POST"])
 def get_sensors():
