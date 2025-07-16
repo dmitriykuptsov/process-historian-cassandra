@@ -22,8 +22,11 @@ class PHClient():
                             "Authorization": "Bearer " + self.token})
         e = time()
         #print(result.text)
-        print("Fetching 1 month of data took " + str(e-s) + " seconds")
+        d = loads(result.text)
+        print(len(d["result"]))
+        print("Fetching 1 hour of data took " + str(e-s) + " seconds")
         
-c = PHClient("http://192.168.1.245:5006", "test2")
+c = PHClient("http://process-historian.strangebit.io:5006", "dima2")
 c.open()
-c.run_query("2025-07-01 00:00:00", "2025-08-01 00:00:00")
+for i in range(0, 100):
+	c.run_query("2025-07-14 23:30:00", "2025-07-18 00:30:00")

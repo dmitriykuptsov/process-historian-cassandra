@@ -2,6 +2,8 @@ import requests
 from json import loads
 from time import time
 import random
+from time import sleep
+
 class PHClient():
     def __init__(self, url, tag):
         self.url = url
@@ -23,19 +25,53 @@ class PHClient():
         for j in range(0, num_rounds):
             s = time()
             batch = {"points": [{self.tag: []}]}
+            #t = time() * 1000
+            t = 1752710400000
+            c = 0
+            j = 0
             for i in range(0, batch_size):
+                t += 100
+                c += 1
                 batch["points"][0][self.tag].append({
-                    "timestamp": int(time() * 1000),
+                    "timestamp": int(t),
                     "value": random.random()
                 })
+                if c > 1000:
+                    j += 1
+                    s = time()
+                    result = self.session.post(self.url + "/injection/add_data/", 
+                            json=batch, 
+                            headers={"Accept": "application/json",
+                            "Authorization": "Bearer " + self.token})
+                    batch = {"points": [{self.tag: []}]}
+                    e = time()
+                    print("Inserting " + str(c) + " batch took " + str(e-s) + " seconds; batch index " + \
+	    	       str(j) + " start " + str(s) + " end " + str(e) + " tag " + self.tag + " " + str(c/(e-s)) + " samples per second")
+                    c = 0
+            s = time()
+            j += 1
             result = self.session.post(self.url + "/injection/add_data/", 
-                    json=batch, 
-                    headers={"Accept": "application/json",
+                            json=batch, 
+                            headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
             e = time()
-            print("Inserting " + str(batch_size) + " a batch took " + str(e-s) + " seconds")
-            print(str(batch_size/(e-s)) + " samples per second")
-c = PHClient("http://192.168.1.245:5006", "test2")
-c.open()
-c.create_tag()
-c.run_batch_insert(10000, 100)
+            print("Inserting " + str(c) + " batch took " + str(e-s) + " seconds; batch index" + \
+                       str(j) + " start " + str(s) + " end " + str(e) + " tag " + self.tag + " " + str(c/(e-s)) + " samples per second")
+            #print(result.text)
+            #e = time()
+            #print("Inserting " + str(batch_size) + " batch took " + str(e-s) + " seconds tag=" + self.tag)
+            #print(str(batch_size/(e-s)) + " samples per second")
+from threading import Thread
+
+def run_thread(tag):
+	c = PHClient("http://process-historian.strangebit.io:5006", tag)
+	c.open()
+	c.create_tag()
+	c.run_batch_insert(int(24*60*60*10), 1)
+
+from sys import argv
+
+for i in range(0, int(argv[1])):
+	t = Thread(target=run_thread, args=("sensor_" + str(i), ))
+	t.start()
+
