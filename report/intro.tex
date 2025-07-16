@@ -10,8 +10,9 @@ fast writes to the disk, (iv) it should have clean design.
 
 In what follows we present MVP for such database that uses 
 Cassandara NoSQL database and Python Flask user facing 
-web service. The solution is a 24 hours challenge 
-and the source codes can be found in~\cite{git}.
+web service. The solution is a result of 24 hours challenge.
+The source codes for our implementation can be found 
+in~\cite{git}.
 
 
 In Figure~\ref{fig:arch} we show rather abstract architecture of our deployment.
@@ -26,3 +27,36 @@ and single REST API server were deployed on single computing node;
   \label{fig:arch}
 \end{figure}
 
+The Cassandra row design is depicted in Figure~\ref{fig:schema}.
+It is basically consists of a wide row (1 day long) and a composite
+partition key: tag plus date bucket. 
+
+\begin{figure}[!hbt]\centering
+  \includegraphics[width=0.45\textwidth]{graphics/schema.png}
+  \caption{Cassandra schema design}
+  \label{fig:schema}
+\end{figure}
+
+The parameters for Cassandra clusters are the following (see
+Table~\ref{tab:params})
+
+\begin{table*}[htp!]
+  \caption{Cassandra parameters}
+  \label{tab:params}
+  \centering
+  \begin{tabular}{lcc}
+    \hline
+    {\bf Parameter}                                  & {\bf Value } \\
+    \hline
+    Number of nodes in the cluster                   & 3       \\
+    Replication factor                               & 2       \\
+    Node RAM size                                    & 2 GB    \\
+    TTL                                              & 1 year  \\
+    Number of seed nodes                             & 1       \\
+    Partitioner                                      & uniform (Murmur3Partitioner) \\
+    Read and write consistency                       & quorum  \\
+  \end{tabular}
+\end{table*}
+
+The remaining parameters where left unchanged and were configured
+during the release of Cassandra 4.1.9 by the developers.

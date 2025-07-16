@@ -1,0 +1,5 @@
+d<-scan("1tag.read.dist.txt")
+pdf("1tag.dist.read.pdf")
+hist(d, breaks=30, col="dark blue", main="", xlab="Time to read 1 hour of data", ylab="Frequence")
+grid()
+dev.off()
