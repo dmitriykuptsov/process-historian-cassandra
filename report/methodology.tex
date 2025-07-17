@@ -1,15 +1,15 @@
 \section{Data collection methodology}
 \label{section:experiments}
 
-To generate the load we have implemented two different clients:
-(i) data writer and (ii) data fetcher. The writer was generating
-data for $n$ tags and pushing into the cloud over the Internet 
-in batches of size $1000$ samples per batch. The writer was 
-concurrently pushing data for $n$ tags (one thread per tag).
-Here we were logging such parameters as batch start and end 
-time, batch number and tag (this allowed us calculating the 
-performance later on). Data fetcher was querying the data 
-for $m$ tags for 1 hour period. Here we logged start time,
-end time, iteration and tag name. Again such information 
-allowed us to calculate the performance for various number 
-of tags.
+To generate the load, we have implemented two different clients: 
+(i) data writer and (ii) data fetcher. The writer was generating 
+data for $n$ tags and pushing into the cloud over the Internet 
+in batches of size $1000$ samples per batch. The writer was 
+concurrently pushing data for $n$ tags (one thread per tag). 
+Here we were logging such parameters as batch start and end time, 
+batch number, and tag (this allowed us to calculate the performance 
+later on). Data fetcher was querying the data for $m$ tags for 
+random 1-hour period. Here we logged start time, end time, iteration number, 
+and tag name. Again, such information allowed us to calculate the 
+performance for various numbers of tags. We did not experiment with 
+the mix load when data was simultaneously written and read from the system.

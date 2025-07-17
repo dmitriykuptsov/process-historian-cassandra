@@ -29,7 +29,9 @@ and single REST API server were deployed on single computing node;
 
 The Cassandra row design is depicted in Figure~\ref{fig:schema}.
 It is basically consists of a wide row (1 day long) and a composite
-partition key: tag plus date bucket. 
+partition key: tag plus date bucket (date bucket splits the data 
+into 1 day periods). The parameters for Cassandra 
+clusters are shown in Table~\ref{tab:params}.
 
 \begin{figure}[!hbt]\centering
   \includegraphics[width=0.45\textwidth]{graphics/schema.png}
@@ -37,8 +39,6 @@ partition key: tag plus date bucket.
   \label{fig:schema}
 \end{figure}
 
-The parameters for Cassandra clusters are the following (see
-Table~\ref{tab:params})
 
 \begin{table*}[htp!]
   \caption{Cassandra parameters}
@@ -60,3 +60,20 @@ Table~\ref{tab:params})
 
 The remaining parameters where left unchanged and were configured
 during the release of Cassandra 4.1.9 by the developers.
+
+Overall, our MVP includes the implementation of the 
+following functionality: (i) sensor metadata manipulation
+(addition, removal, and modification of the sensor information
+in the MySQL database), (ii) raw sensor data injection (we
+have also implemented a simple authentication layer, according to which 
+every data source was creating an HMAC for each tag (this information was 
+verified at the REST API server using the secret key it shared
+with particular sensor), (iii) raw sensor data
+retrieval using tag name, start, and end periods for filtering.
+
+We should note that it is rather trivial to also add data 
+rollup, aggregation (such as finding mean, max, min, etc.)
+and extrapolation (such as time-series prediction) features
+into the code. But all this was out of the scope in this 
+study. 
+

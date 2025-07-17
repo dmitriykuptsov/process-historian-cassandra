@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.6.15)  16 JUL 2025 11:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.6.15)  16 JUL 2025 23:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -364,7 +364,7 @@ Package pdftex.def Info: graphics/arch.png  used on input line 25.
 <graphics/schema.png, id=3, 458.37248pt x 59.80342pt>
 File: graphics/schema.png Graphic file (type png)
 <use graphics/schema.png>
-Package pdftex.def Info: graphics/schema.png  used on input line 35.
+Package pdftex.def Info: graphics/schema.png  used on input line 37.
 (pdftex.def)             Requested size: 235.84328pt x 30.77036pt.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 47.
 
@@ -378,17 +378,21 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 47.
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ))
 (./methodology.tex) (./results.tex
-<graphics/1tag.dist.write.pdf, id=4, 505.89pt x 505.89pt>
-File: graphics/1tag.dist.write.pdf Graphic file (type pdf)
-<use graphics/1tag.dist.write.pdf>
-Package pdftex.def Info: graphics/1tag.dist.write.pdf  used on input line 6.
+<graphics/write.pdf, id=4, 505.89pt x 505.89pt>
+File: graphics/write.pdf Graphic file (type pdf)
+<use graphics/write.pdf>
+Package pdftex.def Info: graphics/write.pdf  used on input line 20.
 (pdftex.def)             Requested size: 235.84328pt x 235.84622pt.
-) (./conclusions.tex [1{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updm
-ap/pdftex.map}
+<graphics/read.pdf, id=5, 505.89pt x 505.89pt>
+File: graphics/read.pdf Graphic file (type pdf)
+<use graphics/read.pdf>
+Package pdftex.def Info: graphics/read.pdf  used on input line 28.
+(pdftex.def)             Requested size: 235.84328pt x 235.84622pt.
+ [1{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}
 
 
- <./graphics/arch.png> <./graphics/schema.png> <./graphics/1tag.dist.write.pdf>
-]) (./paper.bbl)
+ <./graphics/arch.png> <./graphics/schema.png>])
+(./conclusions.tex) (./paper.bbl)
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -400,25 +404,26 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[2] (./paper.aux) ) 
+[2 <./graphics/read.pdf> <./graphics/write.pdf>] (./paper.aux) ) 
 Here is how much of TeX's memory you used:
- 4988 strings out of 478994
- 78474 string characters out of 5858184
- 375314 words of memory out of 5000000
- 22400 multiletter control sequences out of 15000+600000
+ 4993 strings out of 478994
+ 78546 string characters out of 5858184
+ 379322 words of memory out of 5000000
+ 22406 multiletter control sequences out of 15000+600000
  437567 words of font info for 95 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  68i,9n,74p,236b,332s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.
-enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.p
-fb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
-></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/loc
-al/texlive/2021/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texliv
-e/2021/texmf-dist/fonts/type1/urw/times/utmr8a.pfb>
-Output written on paper.pdf (2 pages, 252916 bytes).
+{/usr/local/tex
+live/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2021/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2021/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2021/texmf-di
+st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/t
+ype1/urw/times/utmbi8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/
+times/utmr8a.pfb>
+Output written on paper.pdf (2 pages, 261194 bytes).
 PDF statistics:
- 43 PDF objects out of 1000 (max. 8388607)
- 27 compressed objects within 1 object stream
+ 49 PDF objects out of 1000 (max. 8388607)
+ 31 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 16 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 21 words of extra memory for PDF output out of 10000 (max. 10000000)
 

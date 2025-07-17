@@ -1,8 +1,15 @@
 \section{Conclusions}
 \label{section:conclusion}
 
-In this short paper we have played a bit with the packets which were captured in a small enterprise. Our primary goal was to analyse the
-interactions of computers and build the statistics for the traffic which was captured for several hours. Our key findings are 
-the following: (i) major traffic in the network is HTTPS and HTTP, (ii) antivirus solutions consume considerable amount of 
-bandwidth, (iii) computers in the network mainly interact with the default gateway and few servers, such as NFS server and mail server.
+In this document we have described our effort related to building a 
+process historian database using Python Flask and NoSQL Cassandra
+database. We have completed the entire challenge in roughly 24
+hours. To measure the performance we have experimented with various
+read and write loads, but not the mixture. All-in-all we believe 
+that the system can be used in rather small setups as it is,
+but should be well tuned for large scale deployments. Also, we should
+note that the further analysis is required: (i) we think that the performance
+should be measured for longer periods of time, and (ii) impact of compaction and 
+data removal should be considered thoroughly. Furthermore, investigation of 
+inadequate write performance deserves a separate attention.
 

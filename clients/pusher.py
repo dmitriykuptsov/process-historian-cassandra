@@ -26,7 +26,7 @@ class PHClient():
             s = time()
             batch = {"points": [{self.tag: []}]}
             #t = time() * 1000
-            t = 1752710400000
+            t = 1752883200000
             c = 0
             j = 0
             for i in range(0, batch_size):
@@ -36,17 +36,21 @@ class PHClient():
                     "timestamp": int(t),
                     "value": random.random()
                 })
-                if c > 1000:
+                if c >= 1000:
                     j += 1
                     s = time()
-                    result = self.session.post(self.url + "/injection/add_data/", 
+                    try:
+                        result = self.session.post(self.url + "/injection/add_data/", 
                             json=batch, 
                             headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
-                    batch = {"points": [{self.tag: []}]}
-                    e = time()
-                    print("Inserting " + str(c) + " batch took " + str(e-s) + " seconds; batch index " + \
-	    	       str(j) + " start " + str(s) + " end " + str(e) + " tag " + self.tag + " " + str(c/(e-s)) + " samples per second")
+                        batch = {"points": [{self.tag: []}]}
+                        e = time()
+                        print("Inserting " + str(c) + " batch took " + str(e-s) + " seconds; batch index " + \
+	    	           str(j) + " start " + str(s) + " end " + str(e) + " tag " + self.tag + " " + str(c/(e-s)) + " samples per second")
+                    except Exception as e:
+                        print(e)
+                        pass
                     c = 0
             s = time()
             j += 1
@@ -72,6 +76,6 @@ def run_thread(tag):
 from sys import argv
 
 for i in range(0, int(argv[1])):
-	t = Thread(target=run_thread, args=("sensor_" + str(i), ))
+	t = Thread(target=run_thread, args=("exp_" + str(i), ))
 	t.start()
 

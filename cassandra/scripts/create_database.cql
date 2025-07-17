@@ -1,4 +1,4 @@
-CREATE KEYSPACE ph WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 1};
+CREATE KEYSPACE ph WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 2};
 CREATE TABLE ph.ph (
     tag text,
     date_bucket date,
