@@ -75,8 +75,8 @@ session = cluster.connect(config["CASSANDRA_KEYSPACE"])
 
 @mod_injection.route("/add_data/", methods=["POST"])
 def add_data():
-    if not is_valid_session(request, config):
-        return jsonify({"auth_fail": True})
+    #if not is_valid_session(request, config):
+    #    return jsonify({"auth_fail": True})
     data = request.get_json(force=True)
     if not data:
         return jsonify({"auth_fail": False, "result": False})
