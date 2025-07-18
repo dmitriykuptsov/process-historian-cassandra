@@ -1,8 +1,11 @@
 import requests
-from json import loads
+from json import loads, dumps
 from time import time
 import random
 from time import sleep
+from datetime import datetime
+from Crypto.Hash import SHA256
+from Crypto.Hash import HMAC
 
 class PHClient():
     def __init__(self, url):
@@ -16,6 +19,14 @@ class PHClient():
         d = loads(result.text)
         self.token = d["token"]
         return d["success"]
+    
+    def __compute_hmac(self, data, key):
+        """
+        Computes the HMAC of the data
+        """
+        h = HMAC.new(key.encode("ASCII"), digestmod=SHA256)
+        h.update(data.encode("ASCII"))
+        return h.hexdigest()
     
     def get_tags(self, tag):
         result = self.session.post(self.url + "/api/get_sensors/", 
@@ -48,7 +59,7 @@ class PHClient():
                     json={"tag": tag},
                     headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
-        return loads(result.text)["reason"]
+        return loads(result.text)["result"]
 
     def get_data(self, start, end):
         result = self.session.post(self.url + "/api/get_data_raw/",
@@ -58,15 +69,31 @@ class PHClient():
         d = loads(result.text)
         return d["result"]
     
-    def add_data(self, tag, timestamp, value):
-        batch = {"points": [{self.tag: [{
-                "timestamp": timestamp,
-                "value": value
+    def add_data(self, tag, timestamp, value, secret):
+
+        data_to_sign = dumps(
+                            {"data": {
+                                "timestamp": timestamp,
+                                "value": value
+                            }}
+                            )
+        hmac = self.__compute_hmac(data_to_sign, secret)
+        print(hmac)
+
+        data = {
+                "points": {
+                    tag: {
+                        "data": {
+                            "timestamp": timestamp,
+                            "value": value
+                            }, 
+                        "hmac": "0x0"
+                    }
+                }
             }
-        ]}]}
 
         result = self.session.post(self.url + "/injection/add_data/", 
-            json=batch, 
+            json=data, 
             headers={"Accept": "application/json",
             "Authorization": "Bearer " + self.token})
         
@@ -79,5 +106,7 @@ client.open()
 print(client.create_tag("sensor_1", "Test sensor", "123", ["test", "homeportal"]))
 print(client.get_tags("sensor"))
 print(client.get_tags_by_attribute(["test"]))
-print(client.delete_tag("sensor_1"))
-print(client.get_tags("sensor"))
+#print(client.delete_tag("sensor_1"))
+#print(client.get_tags("sensor"))
+current_datetime = datetime.now()
+client.add_data("sensor_1", current_datetime.timestamp() * 1000, 100, "123")

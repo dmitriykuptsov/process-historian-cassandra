@@ -15,7 +15,6 @@ def compute_hmac(data, key):
     """
     Computes the HMAC of the data
     """
-    h = HMAC()
     h = HMAC.new(key.encode("ASCII"), digestmod=SHA256)
     h.update(data.encode("ASCII"))
     return h.hexdigest()

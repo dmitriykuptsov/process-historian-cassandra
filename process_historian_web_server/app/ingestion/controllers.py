@@ -82,7 +82,8 @@ def add_data():
         return jsonify({"auth_fail": False, "result": False})
     
     points = data.get("points", {})
-
+    print(dumps(points))
+    
     for sensor in points:
         tag = list(sensor.keys())[0]
         sensor_ = db.session.query(Sensors).\
