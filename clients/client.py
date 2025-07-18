@@ -10,11 +10,11 @@ from Crypto.Hash import HMAC
 class PHClient():
     def __init__(self, url):
         self.url = url
-    def open(self):
+    def open(self, username, password):
         self.session = requests.session()
         result = self.session.post(self.url + "/auth/signin/", 
-                                   json={"username": "admin", 
-                                         "password": "password"}, 
+                                   json={"username": username, 
+                                         "password": password}, 
                                     headers={"Accept": "application/json"})
         d = loads(result.text)
         self.token = d["token"]
@@ -118,7 +118,7 @@ class PHClient():
 
 
 client = PHClient("http://192.168.1.245:5006/")
-client.open()
+client.open("admin", "password")
 print(client.create_tag("sensor_4", "Test sensor", "1234567890", ["test", "homeportal"]))
 print(client.get_tags("sensor"))
 print(client.get_tags_by_attribute(["test"]))
