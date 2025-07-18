@@ -25,22 +25,14 @@ class PHClient():
         d = loads(result.text)
         return d["result"]
     
-    def get_tags_by_attribute(self, attrbutes):
-        result = self.session.post(self.url + "/api/get_sensors/", 
-                    json={"attrbutes": attrbutes}, 
+    def get_tags_by_attribute(self, attributes):
+        result = self.session.post(self.url + "/api/get_sensors_by_attributes/", 
+                    json={"attributes": attributes}, 
                     headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
         d = loads(result.text)
         return d["result"]
     
-    def delete_tag(self, tag):
-        result = self.session.post(self.url + "/api/delete_sensor/", 
-                    json={"tag": tag}, 
-                    headers={"Accept": "application/json",
-                            "Authorization": "Bearer " + self.token})
-        d = loads(result.text)
-        return d["result"]
-
     def create_tag(self, tag, description, secret, attributes):
         result = self.session.post(self.url + "/api/add_sensor/", 
                     json={"tag": tag, 
@@ -50,6 +42,13 @@ class PHClient():
                     headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
         return loads(result.text)["result"]
+    
+    def delete_tag(self, tag):
+        result = self.session.post(self.url + "/api/delete_sensor/", 
+                    json={"tag": tag},
+                    headers={"Accept": "application/json",
+                            "Authorization": "Bearer " + self.token})
+        return loads(result.text)["reason"]
 
     def get_data(self, start, end):
         result = self.session.post(self.url + "/api/get_data_raw/",
@@ -80,3 +79,5 @@ client.open()
 print(client.create_tag("sensor_1", "Test sensor", "123", ["test", "homeportal"]))
 print(client.get_tags("sensor"))
 print(client.get_tags_by_attribute(["test"]))
+print(client.delete_tag("sensor_1"))
+print(client.get_tags("sensor"))
