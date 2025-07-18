@@ -61,9 +61,9 @@ class PHClient():
                             "Authorization": "Bearer " + self.token})
         return loads(result.text)["result"]
 
-    def get_data(self, start, end):
+    def get_data(self, tag, start, end):
         result = self.session.post(self.url + "/api/get_data_raw/",
-                    json={"tag": self.tag, "start": start, "end": end},
+                    json={"tag": tag, "start": start, "end": end},
                     headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
         d = loads(result.text)
@@ -71,23 +71,20 @@ class PHClient():
     
     def add_data(self, tag, timestamp, value, secret):
 
-        data_to_sign = dumps(
-                            {"data": {
+        data_to_sign = dumps([{
                                 "timestamp": timestamp,
                                 "value": value
-                            }}
-                            )
+                            }])
         hmac = self.__compute_hmac(data_to_sign, secret)
-        print(hmac)
 
         data = {
                 "points": {
                     tag: {
-                        "data": {
+                        "data": [{
                             "timestamp": timestamp,
                             "value": value
-                            }, 
-                        "hmac": "0x0"
+                            }], 
+                        "hmac": hmac
                     }
                 }
             }
@@ -110,3 +107,4 @@ print(client.get_tags_by_attribute(["test"]))
 #print(client.get_tags("sensor"))
 current_datetime = datetime.now()
 client.add_data("sensor_1", current_datetime.timestamp() * 1000, 100, "123")
+print(client.get_data("sensor_1", "2025-07-18 00:00:00", "2025-07-18 23:00:00"))

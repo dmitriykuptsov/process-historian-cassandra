@@ -81,35 +81,31 @@ def add_data():
     if not data:
         return jsonify({"auth_fail": False, "result": False})
     
-    points = data.get("points", {})
-    print(dumps(points))
-    
-    for sensor in points:
-        tag = list(sensor.keys())[0]
+    data = data.get("points", {})
+
+    for sensor in data.keys():
+        tag = sensor
         sensor_ = db.session.query(Sensors).\
             filter(db.and_(Sensors.tag.ilike(tag))). \
                 first()
         
         if not sensor_:
-            print("Sensor was not found in the database")
             continue
 
         insert_points = session.prepare('INSERT INTO ph (tag, date_bucket, ts, value) VALUES (?, ?, ?, ?)')
         batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
 
-        data = sensor[tag]["data"]
-        hmac = sensor[tag]["hmac"]
+        data_ = data[tag]["data"]
+        hmac = data[tag]["hmac"]
 
-        data_b = dumps(data)
-
-        print(hmac)
-        print(compute_hmac(data_b, sensor_.master_secret.encode("ASCII")))
+        data_b = dumps(data_)
+        print(data_b)
         
-        if hmac != compute_hmac(data_b, sensor_.master_secret.encode("ASCII")):
+        if hmac != compute_hmac(data_b, sensor_.master_secret):
             print("Invalid HMAC")
             continue
 
-        for p in data:
+        for p in data[tag]["data"]:
             try:
                 date_object = datetime.fromtimestamp(float(p["timestamp"]) / 1000)
                 bucket = date_object.strftime("%Y-%m-%d")
