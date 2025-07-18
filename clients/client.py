@@ -20,7 +20,7 @@ class PHClient():
         self.token = d["token"]
         return d["success"]
     
-    def __compute_hmac(self, data, key):
+    def __compute_hmac__(self, data, key):
         """
         Computes the HMAC of the data
         """
@@ -98,7 +98,7 @@ class PHClient():
     def add_data_batch(self, tag, data, secret):
 
         data_to_sign = dumps(data)
-        hmac = self.__compute_hmac(data_to_sign, secret)
+        hmac = self.__compute_hmac__(data_to_sign, secret)
 
         data = {
                 "points": {
@@ -122,7 +122,7 @@ client.open("admin", "password")
 print(client.create_tag("sensor_4", "Test sensor", "1234567890", ["test", "homeportal"]))
 print(client.get_tags("sensor"))
 print(client.get_tags_by_attribute(["test"]))
-#print(client.delete_tag("sensor_1"))
+print(client.delete_tag("sensor_1"))
 print(client.get_tags("sensor_4"))
 
 data = []
