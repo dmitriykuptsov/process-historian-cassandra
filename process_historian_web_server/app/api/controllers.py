@@ -166,6 +166,50 @@ def add_sensor():
         "result": True
     })
 
+@mod_api.route("/update_sensor/", methods=["POST"])
+def update_sensor():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    tag = data.get("tag", None)
+    description = data.get("description", None)
+    secret = data.get("secret", None)
+
+    attributes = data.get("attributes", [])
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag))). \
+            first()
+    
+    if sensor:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Sensor already exists"})
+
+    sensor.description = description
+    sensor.master_secret = secret
+    db.session.commit()
+
+    attributes = db.session.query(Attributes).\
+        filter(db.and_(Attributes.tag == tag)). \
+            all()
+    for attribute in attributes:
+        db.session.delete(attribute)
+        db.session.commit()
+
+    for attr in attributes:
+        attribute = Attributes()
+        attribute.tag = tag
+        attribute.attribute = attr
+        db.session.add(attribute)
+        db.session.commit()
+
+    return jsonify({
+        "auth_fail": False,
+        "result": True
+    })
+
 @mod_api.route("/delete_sensor/", methods=["POST"])
 def delete_sensor():
     if not is_valid_session(request, config):
