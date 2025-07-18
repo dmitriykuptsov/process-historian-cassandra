@@ -97,9 +97,7 @@ def add_data():
 
         data_ = data[tag]["data"]
         hmac = data[tag]["hmac"]
-
         data_b = dumps(data_)
-        print(data_b)
         
         if hmac != compute_hmac(data_b, sensor_.master_secret):
             print("Invalid HMAC")
