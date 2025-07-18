@@ -274,7 +274,8 @@ def get_data_raw():
     result = []
 
     for bucket in buckets:
-        rows = session.execute(query, (bucket[0], bucket[1], ts_start, ts_end, ), consistency_level=ConsistencyLevel.QUORUM)
+        statement = SimpleStatement(query, consistency_level=ConsistencyLevel.QUORUM)
+        rows = session.execute(statement, (bucket[0], bucket[1], ts_start, ts_end, ))
         for row in rows:
             result.append({"timestamp": row[0].timestamp(), "value": row[1]})
 
