@@ -191,10 +191,10 @@ def update_sensor():
     sensor.master_secret = secret
     db.session.commit()
 
-    attributes = db.session.query(Attributes).\
+    attributes_ = db.session.query(Attributes).\
         filter(db.and_(Attributes.tag == tag)). \
             all()
-    for attribute in attributes:
+    for attribute in attributes_:
         db.session.delete(attribute)
         db.session.commit()
 
