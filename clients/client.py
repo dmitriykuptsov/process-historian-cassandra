@@ -97,14 +97,18 @@ class PHClient():
         d = loads(result.text)
         return d["result"]  
 
-
+"""
 client = PHClient("http://192.168.1.245:5006/")
 client.open()
 print(client.create_tag("sensor_1", "Test sensor", "123", ["test", "homeportal"]))
 print(client.get_tags("sensor"))
 print(client.get_tags_by_attribute(["test"]))
 #print(client.delete_tag("sensor_1"))
-#print(client.get_tags("sensor"))
-current_datetime = datetime.now()
-client.add_data("sensor_1", current_datetime.timestamp() * 1000, 100, "123")
+print(client.get_tags("sensor"))
+i = 0
+while i < 100:
+    current_datetime = datetime.now()
+    client.add_data("sensor_1", current_datetime.timestamp() * 1000, 100, "123")
+    i += 1
 print(client.get_data("sensor_1", "2025-07-18 00:00:00", "2025-07-18 23:00:00"))
+"""
