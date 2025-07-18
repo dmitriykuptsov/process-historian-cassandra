@@ -110,7 +110,7 @@ def get_sensors_by_attributes():
     attributes = data.get("attributes", [])
 
     sensors = db.session.query(Attributes).\
-        filter(db.and_(Sensors.tag.in_(attributes))). \
+        filter(db.and_(Attributes.attribute.in_(attributes))). \
             all()
 
     result = {}

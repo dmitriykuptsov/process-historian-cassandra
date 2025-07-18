@@ -1,5 +1,6 @@
 import jwt
 from Crypto.Hash import SHA256
+from Crypto.Hash import HMAC
 import datetime
 
 # DB models
@@ -9,6 +10,15 @@ def get_date_formatted(date):
     if date:
         return date.strftime("%Y.%m.%d")
     return ""
+
+def compute_hmac(data, key):
+    """
+    Computes the HMAC of the data
+    """
+    h = HMAC()
+    h = HMAC.new(key.encode("ASCII"), digestmod=SHA256)
+    h.update(data.encode("ASCII"))
+    return h.hexdigest()
 
 def hash_password(password, salt):
     """

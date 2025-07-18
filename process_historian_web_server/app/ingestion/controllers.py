@@ -25,6 +25,7 @@ from app import config_ as config
 from app.utils.utils import is_valid_session, hash_password, get_subject
 from app.utils.utils import hash_string
 from app.utils.utils import hash_bytes
+from app.utils.utils import compute_hmac
 
 # Datetime utilities
 from datetime import date
@@ -40,6 +41,7 @@ import logging
 # OS and representation stuff
 import os
 from binascii import hexlify
+from json import dumps
 
 #logging.basicConfig()
 #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
@@ -94,7 +96,19 @@ def add_data():
         insert_points = session.prepare('INSERT INTO ph (tag, date_bucket, ts, value) VALUES (?, ?, ?, ?)')
         batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
 
-        for p in sensor[tag]:
+        data = sensor[tag]["data"]
+        hmac = sensor[tag]["hmac"]
+
+        data_b = dumps(data)
+
+        print(hmac)
+        print(compute_hmac(data_b, sensor_.master_secret.encode("ASCII")))
+        
+        if hmac != compute_hmac(data_b, sensor_.master_secret.encode("ASCII")):
+            print("Invalid HMAC")
+            continue
+
+        for p in data:
             try:
                 date_object = datetime.fromtimestamp(float(p["timestamp"]) / 1000)
                 bucket = date_object.strftime("%Y-%m-%d")
