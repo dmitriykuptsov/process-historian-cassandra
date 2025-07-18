@@ -184,7 +184,7 @@ def update_sensor():
         filter(db.and_(Sensors.tag.ilike(tag))). \
             first()
     
-    if sensor:
+    if not sensor:
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor already exists"})
 
     sensor.description = description

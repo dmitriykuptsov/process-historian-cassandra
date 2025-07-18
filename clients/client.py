@@ -54,6 +54,16 @@ class PHClient():
                             "Authorization": "Bearer " + self.token})
         return loads(result.text)["result"]
     
+    def update_sensor(self, tag, description, secret, attributes):
+        result = self.session.post(self.url + "/api/update_sensor/", 
+                    json={"tag": tag, 
+                          "description": description, 
+                          "secret": secret, 
+                          "attributes": attributes}, 
+                    headers={"Accept": "application/json",
+                            "Authorization": "Bearer " + self.token})
+        return loads(result.text)["result"]
+    
     def delete_tag(self, tag):
         result = self.session.post(self.url + "/api/delete_sensor/", 
                     json={"tag": tag},
@@ -120,6 +130,9 @@ class PHClient():
 client = PHClient("http://192.168.1.245:5006/")
 client.open("admin", "password")
 print(client.create_tag("sensor_4", "Test sensor", "1234567890", ["test", "homeportal"]))
+print("------------------------")
+print(client.update_sensor("sensor_4", "My home IoT sensor", "1234567890", ["MySensors", "home IoT"]))
+print("++++++++++++++++++++++++++")
 print(client.get_tags("sensor"))
 print(client.get_tags_by_attribute(["test"]))
 print(client.delete_tag("sensor_1"))
@@ -136,4 +149,4 @@ for i in range(0, 10):
     sleep(0.1)
 #client.add_data("sensor_2", current_datetime.timestamp() * 1000, 100, "123")
 client.add_data_batch("sensor_4", data, "1234567890")
-print(client.get_data("sensor_4", "2025-07-18 00:00:00", "2025-07-18 23:00:00"))
+#print(client.get_data("sensor_4", "2025-07-18 00:00:00", "2025-07-18 23:00:00"))
