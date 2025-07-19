@@ -85,7 +85,7 @@ class PHClient():
                                 "timestamp": timestamp,
                                 "value": value
                             }])
-        hmac = self.__compute_hmac(data_to_sign, secret)
+        hmac = self.__compute_hmac__(data_to_sign, secret)
 
         data = {
                 "points": {
