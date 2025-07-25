@@ -46,6 +46,7 @@ from binascii import hexlify
 # Database models
 from app.api.models import Sensors
 from app.api.models import Attributes
+from app.auth.models import Users
 
 # Import SQLAlchemy functions
 from sqlalchemy.sql import func
@@ -73,6 +74,23 @@ from cassandra import ConsistencyLevel
 
 cluster = Cluster(config["CASSANDRA_NODES"])
 session = cluster.connect(config["CASSANDRA_KEYSPACE"])
+
+@mod_api.route("/get_users/", methods=["POST"])
+def get_users():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    
+    users = db.session.query(Users).all()
+
+    result = []
+    for user in users:
+        result.append(user.username)
+
+    return jsonify({
+        "auth_fail": False,
+        "result": result
+    })
+
 
 @mod_api.route("/get_sensors/", methods=["POST"])
 def get_sensors():
