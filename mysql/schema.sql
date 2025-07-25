@@ -23,4 +23,17 @@ create table if not exists Attributes (
         ON DELETE CASCADE
 );
 
+create table if not exists SensorPermissions (
+    tag varchar(100),
+    username varchar(100),
+    allowed bit,
+    PRIMARY KEY(tag, username),
+    FOREIGN KEY (tag) 
+        REFERENCES Sensors(tag) 
+        ON DELETE CASCADE,
+    FOREIGN KEY (username) 
+        REFERENCES Users(username) 
+        ON DELETE CASCADE
+);
+
 INSERT INTO Users(username, password, salt) VALUES("admin", SHA2(CONCAT("password", "DanWocsAtAv8"), 256), "DanWocsAtAv8");
