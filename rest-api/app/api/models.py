@@ -20,4 +20,5 @@ class SensorPermissions(db.Model):
 
 	tag                = db.Column(db.String(100), nullable = False, primary_key = True)
 	username           = db.Column(db.String(100), nullable = False, primary_key = True)
+	owner              = db.Column(db.String(100), nullable = False)
 	allowed            = db.Column(db.Boolean, nullable = False, default = True)

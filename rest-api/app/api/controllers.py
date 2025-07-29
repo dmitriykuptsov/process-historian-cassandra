@@ -101,6 +101,8 @@ def add_permission_to_sensor():
     
     tag = data.get("tag", "")
     username = data.get("username", "")
+    
+    owner = get_subject(request, config)
 
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag == tag)). \
@@ -120,6 +122,7 @@ def add_permission_to_sensor():
 
     permission.tag = tag
     permission.username = username
+    permission.owner = owner
     permission.allowed = True
 
     db.session.add(permission)
@@ -140,6 +143,8 @@ def remove_permission_to_sensor():
     tag = data.get("tag", "")
     username = data.get("username", "")
 
+    owner = get_subject(request, config)
+
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag == tag)). \
             first()
@@ -155,7 +160,8 @@ def remove_permission_to_sensor():
         return jsonify({"auth_fail": False, "result": False, "reason": "User was not found"})
         
     permission = db.session.query(SensorPermissions).\
-        filter(db.and_(SensorPermissions.tag == tag, SensorPermissions.username == username)). \
+        filter(db.and_(SensorPermissions.tag == tag, SensorPermissions.owner == owner, 
+                       SensorPermissions.username == username)). \
             first()
     
     if not permission:

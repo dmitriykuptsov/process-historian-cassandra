@@ -26,6 +26,7 @@ create table if not exists Attributes (
 create table if not exists SensorPermissions (
     tag varchar(100),
     username varchar(100),
+    owner varchar(100),
     allowed bit,
     PRIMARY KEY(tag, username),
     FOREIGN KEY (tag) 
