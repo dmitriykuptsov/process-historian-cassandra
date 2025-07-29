@@ -4,6 +4,7 @@ class Users(db.Model):
     __tablename__ = "Users"
     
     username = db.Column(db.String(100), nullable=False, primary_key = True)
+    email    = db.Column(db.String(100))
     password = db.Column(db.String(200), nullable=False)
     salt     = db.Column(db.String(200), nullable=False)
 

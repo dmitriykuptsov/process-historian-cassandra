@@ -4,6 +4,7 @@ use ph;
 
 create table if not exists Users (
     username varchar(100) PRIMARY KEY,
+    email varchar(100),
     password varchar(200) NOT NULL,
     salt varchar(200) NOT NULL
 );
