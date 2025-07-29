@@ -247,6 +247,8 @@ def add_sensor():
     if not data:
         return jsonify({"auth_fail": False, "result": False})
     
+    owner = get_subject(request, config)
+    
     username = get_subject(request, config)
     tag = data.get("tag", None)
     description = data.get("description", None)
@@ -280,6 +282,7 @@ def add_sensor():
     permission.tag = tag
     permission.username = username
     permission.allowed = True
+    permission.owner = owner
 
     db.session.add(permission)
     db.session.commit()
