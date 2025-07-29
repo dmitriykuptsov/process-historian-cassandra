@@ -47,6 +47,7 @@ from binascii import hexlify
 from app.api.models import Sensors
 from app.api.models import Attributes
 from app.auth.models import Users
+from app.api.models import SensorPermissions
 
 # Import SQLAlchemy functions
 from sqlalchemy.sql import func
@@ -91,6 +92,82 @@ def get_users():
         "result": result
     })
 
+@mod_api.route("/add_permission_to_sensor/", methods=["POST"])
+def add_permission_to_sensor():
+
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    tag = data.get("tag", "")
+    username = data.get("username", "")
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag == tag)). \
+            first()
+    
+    if not sensor:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Sensor was not found"})
+
+    user = db.session.query(Users).\
+        filter(db.and_(Users.username == username)). \
+            first()
+    
+    if not user:
+        return jsonify({"auth_fail": False, "result": False, "reason": "User was not found"})
+        
+    permission = SensorPermissions()
+
+    permission.tag = tag
+    permission.username = username
+    permission.allowed = True
+
+    db.session.add(permission)
+    db.session.commit()
+
+    return jsonify({
+        "auth_fail": False,
+        "result": True
+    })
+
+@mod_api.route("/remove_permission_to_sensor/", methods=["POST"])
+def remove_permission_to_sensor():
+
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    tag = data.get("tag", "")
+    username = data.get("username", "")
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag == tag)). \
+            first()
+    
+    if not sensor:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Sensor was not found"})
+
+    user = db.session.query(Users).\
+        filter(db.and_(Users.username == username)). \
+            first()
+    
+    if not user:
+        return jsonify({"auth_fail": False, "result": False, "reason": "User was not found"})
+        
+    permission = db.session.query(SensorPermissions).\
+        filter(db.and_(SensorPermissions.tag == tag, SensorPermissions.username == username)). \
+            first()
+    
+    if not permission:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Permission was not found"})
+
+    db.session.remove(permission)
+    db.session.commit()
+
+    return jsonify({
+        "auth_fail": False,
+        "result": True
+    })
 
 @mod_api.route("/get_sensors/", methods=["POST"])
 def get_sensors():
@@ -102,6 +179,8 @@ def get_sensors():
     
     tag = data.get("tag", "")
 
+    username = get_subject(request, config)
+
     tag = "%" + tag + "%";
 
     sensors = db.session.query(Sensors).\
@@ -110,7 +189,11 @@ def get_sensors():
 
     result = []
     for sensor in sensors:
-        result.append(sensor.tag)
+        permission = db.session.query(SensorPermissions).\
+            filter(db.and_(SensorPermissions.tag.ilike(tag), SensorPermissions.username == username)). \
+                first()
+        if permission:
+            result.append(sensor.tag)
 
     return jsonify({
         "auth_fail": False,
@@ -125,6 +208,8 @@ def get_sensors_by_attributes():
     if not data:
         return jsonify({"auth_fail": False, "result": False})
     
+    username = get_subject(request, config)
+    
     attributes = data.get("attributes", [])
 
     sensors = db.session.query(Attributes).\
@@ -133,7 +218,11 @@ def get_sensors_by_attributes():
 
     result = {}
     for sensor in sensors:
-        result[sensor.tag] = True
+        permission = db.session.query(SensorPermissions).\
+            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
+                first()
+        if permission:
+            result[sensor.tag] = True
 
     tags = []
     for r in result.keys():
@@ -152,6 +241,7 @@ def add_sensor():
     if not data:
         return jsonify({"auth_fail": False, "result": False})
     
+    username = get_subject(request, config)
     tag = data.get("tag", None)
     description = data.get("description", None)
     secret = data.get("secret", None)
@@ -179,6 +269,15 @@ def add_sensor():
         db.session.add(attribute)
         db.session.commit()
 
+    permission = SensorPermissions()
+
+    permission.tag = tag
+    permission.username = username
+    permission.allowed = True
+
+    db.session.add(permission)
+    db.session.commit()
+
     return jsonify({
         "auth_fail": False,
         "result": True
@@ -202,8 +301,17 @@ def update_sensor():
         filter(db.and_(Sensors.tag.ilike(tag))). \
             first()
     
+    username = get_subject(request, config)
+    
     if not sensor:
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor already exists"})
+
+    permission = db.session.query(SensorPermissions).\
+            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
+                first()
+    
+    if not permission:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
 
     sensor.description = description
     sensor.master_secret = secret
@@ -238,6 +346,8 @@ def delete_sensor():
     
     tag = data.get("tag", None)
 
+    username = get_subject(request, config)
+
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
             first()
@@ -245,6 +355,13 @@ def delete_sensor():
     if not sensor:
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
 
+    permission = db.session.query(SensorPermissions).\
+            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
+                first()
+    
+    if not permission:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
+    
     db.session.delete(sensor)
     db.session.commit()
 
@@ -260,6 +377,8 @@ def get_data_raw():
     data = request.get_json(force=True)
     if not data:
         return jsonify({"auth_fail": False, "result": False})
+
+    username = get_subject(request, config)
 
     tag = data.get("tag", None)
 
@@ -281,6 +400,14 @@ def get_data_raw():
     if not sensor:
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
 	
+    permission = db.session.query(SensorPermissions).\
+            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
+                first()
+    
+    if not permission:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
+
+
     buckets = []
     current_date = start
     while current_date <= end:

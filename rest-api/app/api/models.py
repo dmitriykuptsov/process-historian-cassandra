@@ -13,3 +13,11 @@ class Attributes(db.Model):
 	tag                = db.Column(db.String(100), nullable = False, primary_key = True)
 	attribute          = db.Column(db.String(1000), nullable = False, primary_key = True)
 
+
+class SensorPermissions(db.Model):
+	
+	__tablename__      = "SensorPermissions"
+
+	tag                = db.Column(db.String(100), nullable = False, primary_key = True)
+	username           = db.Column(db.String(100), nullable = False, primary_key = True)
+	allowed            = db.Column(db.Boolean, nullable = False, default = True)
