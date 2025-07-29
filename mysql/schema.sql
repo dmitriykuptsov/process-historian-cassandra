@@ -12,7 +12,8 @@ create table if not exists Users (
 create table if not exists Sensors (
     tag varchar(100) PRIMARY KEY,
     description varchar(1000),
-    master_secret varchar(200)
+    master_secret varchar(200),
+    owner varchar(100)
 );
 
 create table if not exists Attributes (

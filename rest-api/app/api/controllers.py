@@ -267,6 +267,7 @@ def add_sensor():
     sensor.tag = tag
     sensor.description = description
     sensor.master_secret = secret
+    sensor.owner = owner
     db.session.add(sensor)
     db.session.commit()
 
