@@ -362,13 +362,13 @@ def add_sensor():
     tag = data.get("tag", None)
     description = data.get("description", None)
     secret = data.get("secret", None)
-    is_public_read = data.get("is_public_read", False)
+    is_public_read = data.get("is_public_read", 0)
 
     if is_public_read == "0":
-        is_public_read = False
+        is_public_read = 0x0
 
     if is_public_read == "1":
-        is_public_read = True
+        is_public_read = 0x1
 
     attributes = data.get("attributes", [])
 
@@ -421,13 +421,13 @@ def update_sensor():
     tag = data.get("tag", None)
     description = data.get("description", None)
     secret = data.get("secret", None)
-    is_public_read = data.get("is_public_read", False)
+    is_public_read = data.get("is_public_read", "0")
 
     if is_public_read == "0":
-        is_public_read = False
+        is_public_read = 0x0
 
     if is_public_read == "1":
-        is_public_read = True
+        is_public_read = 0x1
 
     attributes = data.get("attributes", [])
 
@@ -455,6 +455,7 @@ def update_sensor():
     attributes_ = db.session.query(Attributes).\
         filter(db.and_(Attributes.tag == tag)). \
             all()
+
     for attribute in attributes_:
         db.session.delete(attribute)
         db.session.commit()
@@ -587,7 +588,7 @@ def get_data_raw_public():
     if not sensor:
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
 	
-    if not sensor.is_public_read:
+    if not sensor.is_public_read or sensor.is_public_read != 0x1:
         return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
 
 
