@@ -185,13 +185,18 @@ def get_sensors():
     
     tag = data.get("tag", "")
 
+    offset = data.get("offset", 0)
+    limit = data.get("limit", 20)
+    
+
     username = get_subject(request, config)
 
     tag = "%" + tag + "%";
 
     sensors = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
-            all()
+            offset(offset=offset).limit(limit=limit). \
+                all()
 
     result = []
     for sensor in sensors:
