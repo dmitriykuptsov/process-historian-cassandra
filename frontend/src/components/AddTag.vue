@@ -144,12 +144,13 @@ export default {
         }, { headers })
         .then((response) => {
           this.showSpinner = false;
-          if (!response.data.result) {
+          if (response.data.result) {
             this.$emit("save", {});
             e.preventDefault();
           } else {
             this.showError = true;
             this.errorMessage = response.data.reason
+            e.preventDefault();
           }
         });
         e.preventDefault();
