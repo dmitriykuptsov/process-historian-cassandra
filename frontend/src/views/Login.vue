@@ -84,12 +84,12 @@ export default {
       axios
         .post(this.$BASE_URL + "/auth/signin/", data, { headers })
         .then((response) => {
-          if (response.data[0].success) {
+          if (response.data.success) {
             sessionStorage.setItem("token", response.data.token);
             this.$parent.isAuthenticated = true;
             this.$router.push("/sensors/");
           }
-          this.failed = !response.data[0].success;
+          this.failed = !response.data.success;
         });
       e.preventDefault();
     },

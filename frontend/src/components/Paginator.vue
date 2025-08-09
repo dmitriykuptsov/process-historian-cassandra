@@ -6,8 +6,8 @@
       style="border-style: none"
     >
       <div class="info">
-        Общее количество страниц: {{ numPages }} Общее количество записей:
-        {{ count }} Текущая страница: {{ currentPage }}
+        Total number of pages: {{ numPages }} Number of tags:
+        {{ count }} Current page: {{ currentPage }}
       </div>
       <button
         @click="prev"

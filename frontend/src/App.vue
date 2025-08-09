@@ -85,7 +85,7 @@ export default {
       const url = this.$BASE_URL + "/auth/validate_token/";
       axios.post(url, {}, { headers }).then((response) => {
         this.loaded = true;
-        if (response.data[0].valid) {
+        if (response.data.valid) {
           this.isAuthenticated = true;
         } else {
           this.isAuthenticated = false;
