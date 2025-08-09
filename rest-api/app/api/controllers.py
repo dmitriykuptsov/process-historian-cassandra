@@ -236,7 +236,7 @@ def get_sensors_own():
     result = []
     for sensor in sensors:
         if sensor.owner == username:
-            attribues = db.session(Attributes).filter(and_(Attributes.tag == sensor.tag)).all()
+            attribues = db.session(Attributes).filter(db.and_(Attributes.tag == sensor.tag)).all()
             s = {
                 "tag": sensor.tag,
                 "description": sensor.description,
