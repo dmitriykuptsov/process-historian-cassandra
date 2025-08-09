@@ -439,11 +439,7 @@ def delete_sensor():
     if not sensor:
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
 
-    permission = db.session.query(SensorPermissions).\
-            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
-                first()
-    
-    if not permission:
+    if sensor.owner != username:
         return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
     
     db.session.delete(sensor)

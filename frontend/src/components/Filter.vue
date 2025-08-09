@@ -9,7 +9,7 @@
             style="float: left; width: 200px"
           >
             <BootstrapIcon icon="filter" />
-            Отфильтровать
+            Filter by tag
           </button>
         </td>
         <td style="border-style: none !important">
@@ -19,7 +19,7 @@
             style="float: left; width: 200px"
           >
             <BootstrapIcon icon="arrow-clockwise" />
-            Очистить
+            Clear filter
           </button>
         </td>
         <td style="width: 100%">
@@ -28,7 +28,7 @@
             class="form-control form-control-lg"
             style="display: inline; width: calc(100%)"
             v-model="filter"
-            placeholder="Введите для фильтрации"
+            placeholder="Enter value"
           />
         </td>
       </tr>
@@ -79,7 +79,6 @@ export default {
   height: 50px;
   margin-bottom: 15px;
   padding-bottom: 65px;
-  border-bottom: 3px dotted grey;
   font-weight: bolder;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   /* border-style: none !important; */
