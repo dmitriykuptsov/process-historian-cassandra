@@ -131,6 +131,8 @@ export default {
     },
     hideEditTag() {
       this.showEditTag = false;
+      this.countSensors()
+      this.getSensors()
     },
     remoteTag(tag) {
       const token = sessionStorage.getItem("token");
