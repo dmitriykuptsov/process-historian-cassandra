@@ -242,10 +242,10 @@ def get_sensors_own():
                 "description": sensor.description,
                 "secret": sensor.master_secret,
                 "is_public": sensor.is_public_read,
-                "attrbutes": []
+                "attributes": []
             }
             for a in attribues:
-                s["attrbutes"].append(a.attribute)
+                s["attributes"].append(a.attribute)
             result.append(s)
 
     return jsonify({
