@@ -211,6 +211,71 @@ def get_sensors():
         "result": result
     })
 
+@mod_api.route("/get_sensors_own/", methods=["POST"])
+def get_sensors_own():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    tag = data.get("tag", "")
+
+    offset = data.get("offset", 0)
+    limit = data.get("limit", 20)
+
+    username = get_subject(request, config)
+
+    tag = "%" + tag + "%";
+
+    sensors = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag), Sensors.owner == username)). \
+            offset(offset=offset).limit(limit=limit). \
+                all()
+
+    result = []
+    for sensor in sensors:
+        if sensor.owner == username:
+            attribues = db.session(Attributes).filter(and_(Attributes.tag == sensor.tag)).all()
+            s = {
+                "tag": sensor.tag,
+                "description": sensor.description,
+                "secret": sensor.master_secret,
+                "is_public": sensor.is_public_read,
+                "attrbutes": []
+            }
+            for a in attribues:
+                s["attrbutes"].append(a.attribute)
+            result.append(s)
+
+    return jsonify({
+        "auth_fail": False,
+        "result": result
+    })
+
+@mod_api.route("/count_own_sensors/", methods=["POST"])
+def count_own_sensors():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    tag = data.get("tag", "")
+
+    username = get_subject(request, config)
+
+    tag = "%" + tag + "%";
+
+    count = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag)), Sensors.owner == username). \
+            count()
+
+    return jsonify({
+        "auth_fail": False,
+        "result": count
+    })
+
 @mod_api.route("/get_sensors_by_attributes/", methods=["POST"])
 def get_sensors_by_attributes():
     if not is_valid_session(request, config):
