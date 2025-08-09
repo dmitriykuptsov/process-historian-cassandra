@@ -16,6 +16,7 @@ class PHClient():
                                    json={"username": username, 
                                          "password": password}, 
                                     headers={"Accept": "application/json"})
+        print(result.text)
         d = loads(result.text)
         self.token = d["token"]
         return d["success"]
@@ -83,6 +84,7 @@ class PHClient():
         result = self.session.post(self.url + "/api/get_data_raw_public/",
                     json={"tag": tag, "start": start, "end": end},
                     headers={"Accept": "application/json"})
+        print(result.text)
         d = loads(result.text)
         return d["result"]
     
@@ -134,22 +136,20 @@ class PHClient():
         return d["result"]  
 
 
-client = PHClient("http://192.168.1.244:5006/")
-client.open("admin", "password")
-print(client.create_tag("demo_temperature_tag", "Demo sensor", "1234567890", ["demo", "temperature"]))
+client = PHClient("https://process-historian.strangebit.io/")
+client.open("admin", "cicurdyifyuWyadvurlyondaizJibOts")
+#print(client.create_tag("demo_temperature_tag", "Demo sensor", "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz", ["demo", "temperature"]))
 
 
-data = []
-for i in range(0, 10):
-    current_datetime = datetime.now(UTC)
-    value = 100
+import subprocess
+while True:
+    data = []
+    current_datetime = datetime.now(UTC
+    process = subprocess.Popen(["cat", " /sys/class/thermal/thermal_zone0/temp"], stdout=subprocess.PIPE, text=True)
+    output, errors = process.communicate()
+    value = float(output)/1000
     data.append({
         "timestamp": current_datetime.timestamp() * 1000,
         "value": value
     })
-    sleep(0.1)
-
-#client.add_data("sensor_2", current_datetime.timestamp() * 1000, 100, "1234567890")
-client.add_data_batch("demo_temperature_tag", data, "1234567890")
-#print(client.get_data("demo_temperature_tag", "2025-08-09 00:00:00", "2025-08-09 23:00:00"))
-print(client.get_data_public("demo_temperature_tag", "2025-08-09 08:36:52", "2025-08-09 14:36:52"))
+    client.add_data_batch("demo_temperature_tag", data, "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz")
