@@ -8,7 +8,7 @@
     />
     <Spinner v-if="showSpinner" />
     <div class="modal-window">
-      <div class="header">Добавление нового пользователя</div>
+      <div class="header">Adding new tag</div>
       <div class="body">
         <form class="login-form">
           <div class="form-group">

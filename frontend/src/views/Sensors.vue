@@ -13,6 +13,12 @@
         v-on:save="hideAddTag"
         v-on:cancel="hideAddTag"
       />
+      <EditTag
+        v-if="showEditTag"
+        v-bind:tag="selectedTag"
+        v-on:save="hideEditTag"
+        v-on:cancel="hideEditTag"
+      />
       <Filter v-on:filter="filterTable" v-bind:filterVal="filter" />
       <div style="font-weight: bold; text-align: center">Your tags</div>
       <div>
@@ -72,7 +78,7 @@
                 <button class="btn btn-danger" @click="remoteTag(s.tag)">Delete</button>
               </td>
               <td>
-                <button class="btn btn-primary"  @click="editTag(s.tag)">Edit</button>
+                <button class="btn btn-primary"  @click="callEditTag(s.tag)">Edit</button>
               </td>
             </tr>
           </tbody>
@@ -90,6 +96,7 @@ import Filter from "../components/Filter.vue";
 import Spinner from "../components/Spinner.vue";
 import OkModal from "../components/OkModal.vue";
 import AddTag from "../components/AddTag.vue";
+import EditTag from "../components/EditTag.vue";
 
 export default {
   name: "Sensors",
@@ -103,7 +110,9 @@ export default {
       loadedTags: 0,
       showSpinner: true,
       sensors: [],
-      showAddTag: false
+      showAddTag: false,
+      showEditTag: false,
+      selectedTag: null
     };
   },
   methods: {
@@ -114,6 +123,14 @@ export default {
       this.showAddTag = false;
       this.countSensors()
       this.getSensors()
+    },
+    callEditTag(tag) {
+      this.selectedTag = tag;
+      this.showEditTag = true;
+      
+    },
+    hideEditTag() {
+      this.showEditTag = false;
     },
     remoteTag(tag) {
       const token = sessionStorage.getItem("token");
@@ -180,7 +197,8 @@ export default {
     Filter,
     Spinner,
     OkModal,
-    AddTag
+    AddTag,
+    EditTag
   },
   mounted() {
     this.countSensors();

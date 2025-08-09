@@ -8,7 +8,7 @@
     />
     <Spinner v-if="showSpinner" />
     <div class="modal-window">
-      <div class="header">Добавление нового пользователя</div>
+      <div class="header">Editing of existing tag</div>
       <div class="body">
         <form class="login-form">
           <div class="form-group">
@@ -16,8 +16,8 @@
             <input
               type="text"
               class="form-control form-control-lg"
-              v-model="tag"
-              enable="false"
+              v-model="sensor.tag"
+              disabled
             />
           </div>
           <div class="form-group">
@@ -25,7 +25,7 @@
             <input
               type="text"
               class="form-control form-control-lg"
-              v-model="description"
+              v-model="sensor.description"
             />
           </div>
           <div class="form-group">
@@ -33,14 +33,14 @@
             <input
               type="text"
               class="form-control form-control-lg"
-              v-model="secret"
+              v-model="sensor.secret"
             />
           </div>
           <div class="form-group">
             <label>Is public</label>
             <select
               class="form-select"
-              v-model="public_read"
+              v-model="sensor.is_public"
               aria-label="Public"
             >
               <option
@@ -66,13 +66,13 @@
           </div>
           <div class="form-group">
             <label>Added attributes</label><br/>
-            <span v-for="a in s.attributes" v-bind:key="a" class="badge rounded-pill bg-danger">
+            <span v-for="a in sensor.attributes" v-bind:key="a" class="badge rounded-pill bg-danger">
                 {{a}} <a href="#" @click="removeAttribute(e, a)">X</a>
             </span>
           </div>
           <div class="form-group" style="margin-top: 10px">
             <button @click="save" class="btn btn-dark btn-lg btn-block save">
-              Add tag
+              Update tag
             </button>
             <button @click="cancel" class="btn btn-dark btn-lg btn-block close">
               Cancel
@@ -102,7 +102,9 @@ export default {
       showError: false,
       errorHeader: "Error",
       errorMessage: "",
-      showSpinner: false
+      showSpinner: false,
+      selectedTag: "",
+      sensor: {}
     };
   },
   methods: {
@@ -111,19 +113,19 @@ export default {
     },
     addAttribute(e) {
         if (this.attribute != null || this.attribute != "") {
-            this.attributes.push(this.attribute);    
+            this.sensor.attributes.push(this.attribute);    
         }
         this.attribute = ""
         e.preventDefault();
     },
     removeAttribute(e, a) {
         var n = []
-        for (var i = 0; i < this.attributes.length; i++) {
-            if (a != this.attributes[i]) {
-                n.push(this.attributes[i])
+        for (var i = 0; i < this.sensor.attributes.length; i++) {
+            if (a != this.sensor.attributes[i]) {
+                n.push(this.sensor.attributes[i])
             }
         }
-        this.attributes = n;
+        this.sensor.attributes = n;
         e.preventDefault();
     },
     getSensor() {
@@ -133,12 +135,17 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       };
-      const url = this.$BASE_URL + "/api/get_sensors_own/";
+      const url = this.$BASE_URL + "/api/get_sensor_own/";
       axios.post(url, {
           tag: this.tag
         }, { headers }).then((response) => {
         if (!response.data.auth_fail) {
           this.sensor = response.data.result;
+          if (this.sensor.is_public) {
+            this.sensor.is_public = "1"
+          } else {
+            this.sensor.is_public = "0"
+          }
           this.showSpinner = false;
         }
       });
@@ -150,14 +157,14 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       };
-      var url = this.$BASE_URL + "/api/add_sensor/";
+      var url = this.$BASE_URL + "/api/update_sensor/";
       axios
         .post(url, { 
-            tag: this.tag, 
-            description: this.description,  
-            is_public_read: this.public_read,
-            secret: this.secret,
-            attributes: this.attributes
+            tag: this.sensor.tag, 
+            description: this.sensor.description,  
+            is_public_read: this.sensor.is_public,
+            secret: this.sensor.secret,
+            attributes: this.sensor.attributes
         }, { headers })
         .then((response) => {
           this.showSpinner = false;
