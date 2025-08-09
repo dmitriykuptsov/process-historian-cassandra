@@ -58,13 +58,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="s in sensors" v-bind:key="s.tag">
-              <th scope="row">1</th>
+            <tr v-for="(s, index) in sensors" v-bind:key="s.tag">
+              <th scope="row">{{index}}</th>
               <td>{{s.tag}}</td>
               <td>{{s.description}}</td>
               <td>
                 <span class="badge rounded-pill bg-danger">
-                  {{s.is_public}}
+                  {{s.is_public != 0}}
                 </span>
                 
               </td>
