@@ -211,6 +211,45 @@ def get_sensors():
         "result": result
     })
 
+@mod_api.route("/get_sensor_own/", methods=["POST"])
+def get_sensor_own():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    tag = data.get("tag", "")
+
+    offset = data.get("offset", 0)
+    limit = data.get("limit", 20)
+
+    username = get_subject(request, config)
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag), Sensors.owner == username)). \
+            offset(offset=offset).limit(limit=limit). \
+                first()
+
+    s = {}
+    if sensor:
+        if sensor.owner == username:
+            attribues = db.session.query(Attributes).filter(db.and_(Attributes.tag == sensor.tag)).all()
+            s = {
+                "tag": sensor.tag,
+                "description": sensor.description,
+                "secret": sensor.master_secret,
+                "is_public": sensor.is_public_read,
+                "attributes": []
+            }
+            for a in attribues:
+                s["attributes"].append(a.attribute)
+
+    return jsonify({
+        "auth_fail": False,
+        "result": s
+    })
+
 @mod_api.route("/get_sensors_own/", methods=["POST"])
 def get_sensors_own():
     if not is_valid_session(request, config):
