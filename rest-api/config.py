@@ -27,10 +27,10 @@ CSRF_SESSION_KEY = "umLovFucsokustoosepquitViOvufPiv"
 SECRET_KEY = "CashFeitjidarIbrInthepicCofIfDij"
 
 # Token key
-TOKEN_KEY = "ApsuctotchyulquorcEyctipbeinEgnighatuljUgbavbidgu3VucheercIckNic"
+TOKEN_KEY = "cyedEcnoucJovnugs2OrGhiadkaibJejrercomguItInibWothiOnyodVevrytwu"
 
 # Server noncep
-SERVER_NONCE = "shrojEivtuIphDecOojsoodWoQuidIabceflafquoiQuonOjdebewvOkbityier"
+SERVER_NONCE = "udOtJatnaweedlyhoicHubjabmywuShrakkanacDekveClukDas;shrardAnusAj"
 
 # Validity of the token in days
 JWT_VALIDITY_IN_DAYS = 30
