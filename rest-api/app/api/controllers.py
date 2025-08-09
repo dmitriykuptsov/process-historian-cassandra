@@ -450,7 +450,7 @@ def get_data_raw():
     })
 
 @mod_api.route("/get_data_raw_public/", methods=["POST"])
-def get_data_raw():
+def get_data_raw_public():
     data = request.get_json(force=True)
     if not data:
         return jsonify({"auth_fail": False, "result": False})
