@@ -198,7 +198,7 @@ def get_sensors():
         permission = db.session.query(SensorPermissions).\
             filter(db.and_(SensorPermissions.tag.ilike(tag), SensorPermissions.username == username)). \
                 first()
-        if permission:
+        if permission or sensor.is_public_read:
             result.append(sensor.tag)
 
     return jsonify({
@@ -227,7 +227,7 @@ def get_sensors_by_attributes():
         permission = db.session.query(SensorPermissions).\
             filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
                 first()
-        if permission:
+        if permission or sensor.is_public_read:
             result[sensor.tag] = True
 
     tags = []
@@ -253,6 +253,7 @@ def add_sensor():
     tag = data.get("tag", None)
     description = data.get("description", None)
     secret = data.get("secret", None)
+    is_public_read = data.get("is_public_read", False)
 
     attributes = data.get("attributes", [])
 
@@ -268,6 +269,7 @@ def add_sensor():
     sensor.description = description
     sensor.master_secret = secret
     sensor.owner = owner
+    sensor.is_public_read = is_public_read
     db.session.add(sensor)
     db.session.commit()
 
@@ -304,6 +306,7 @@ def update_sensor():
     tag = data.get("tag", None)
     description = data.get("description", None)
     secret = data.get("secret", None)
+    is_public_read = data.get("is_public_read", False)
 
     attributes = data.get("attributes", [])
 
@@ -317,14 +320,15 @@ def update_sensor():
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor already exists"})
 
     permission = db.session.query(SensorPermissions).\
-            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
-                first()
+        filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
+            first()
     
     if not permission:
         return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
 
     sensor.description = description
     sensor.master_secret = secret
+    sensor.is_public_read = is_public_read
     db.session.commit()
 
     attributes_ = db.session.query(Attributes).\
@@ -414,7 +418,7 @@ def get_data_raw():
             filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
                 first()
     
-    if not permission:
+    if not permission and not sensor.is_public_read:
         return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
 
 

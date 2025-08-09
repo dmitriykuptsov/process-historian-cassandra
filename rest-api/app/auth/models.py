@@ -7,6 +7,7 @@ class Users(db.Model):
     email    = db.Column(db.String(100))
     password = db.Column(db.String(200), nullable=False)
     salt     = db.Column(db.String(200), nullable=False)
+    
 
     def __repr__(self):
         return '<Username %r>' % (self.username)

@@ -13,6 +13,7 @@ create table if not exists Sensors (
     tag varchar(100) PRIMARY KEY,
     description varchar(1000),
     master_secret varchar(200),
+    is_public_read bit DEFAULT FALSE,
     owner varchar(100)
 );
 
