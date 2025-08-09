@@ -537,7 +537,7 @@ def get_data_raw():
             filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
                 first()
     
-    if not permission and not sensor.is_public_read:
+    if not permission:
         return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
 
 
@@ -588,7 +588,7 @@ def get_data_raw_public():
     if not sensor:
         return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
 	
-    if not sensor.is_public_read or sensor.is_public_read != 0x1:
+    if sensor.is_public_read != 0x1:
         return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
 
 
