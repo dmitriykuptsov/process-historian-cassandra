@@ -239,7 +239,7 @@ def get_sensor_own():
                 "tag": sensor.tag,
                 "description": sensor.description,
                 "secret": sensor.master_secret,
-                "is_public": sensor.is_public_read,
+                "is_public": sensor.is_public_read == 0x1,
                 "attributes": []
             }
             for a in attribues:
