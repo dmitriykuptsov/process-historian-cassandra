@@ -3,7 +3,7 @@ from json import loads, dumps
 from time import time
 import random
 from time import sleep
-from datetime import datetime
+from datetime import datetime, UTC
 from Crypto.Hash import SHA256
 from Crypto.Hash import HMAC
 
@@ -78,6 +78,13 @@ class PHClient():
                             "Authorization": "Bearer " + self.token})
         d = loads(result.text)
         return d["result"]
+
+    def get_data_public(self, tag, start, end):
+        result = self.session.post(self.url + "/api/get_data_raw_public/",
+                    json={"tag": tag, "start": start, "end": end},
+                    headers={"Accept": "application/json"})
+        d = loads(result.text)
+        return d["result"]
     
     def add_data(self, tag, timestamp, value, secret):
 
@@ -127,26 +134,22 @@ class PHClient():
         return d["result"]  
 
 
-client = PHClient("http://192.168.1.245:5006/")
+client = PHClient("http://192.168.1.244:5006/")
 client.open("admin", "password")
-print(client.create_tag("sensor_4", "Test sensor", "1234567890", ["test", "homeportal"]))
-print("------------------------")
-print(client.update_sensor("sensor_4", "My home IoT sensor", "1234567890", ["MySensors", "home IoT"]))
-print("++++++++++++++++++++++++++")
-print(client.get_tags("sensor"))
-print(client.get_tags_by_attribute(["test"]))
-print(client.delete_tag("sensor_1"))
-print(client.get_tags("sensor_4"))
+print(client.create_tag("demo_temperature_tag", "Demo sensor", "1234567890", ["demo", "temperature"]))
+
 
 data = []
 for i in range(0, 10):
-    current_datetime = datetime.now()
+    current_datetime = datetime.now(UTC)
     value = 100
     data.append({
         "timestamp": current_datetime.timestamp() * 1000,
         "value": value
     })
     sleep(0.1)
-#client.add_data("sensor_2", current_datetime.timestamp() * 1000, 100, "123")
-client.add_data_batch("sensor_4", data, "1234567890")
-#print(client.get_data("sensor_4", "2025-07-18 00:00:00", "2025-07-18 23:00:00"))
+
+#client.add_data("sensor_2", current_datetime.timestamp() * 1000, 100, "1234567890")
+client.add_data_batch("demo_temperature_tag", data, "1234567890")
+#print(client.get_data("demo_temperature_tag", "2025-08-09 00:00:00", "2025-08-09 23:00:00"))
+print(client.get_data_public("demo_temperature_tag", "2025-08-09 08:36:52", "2025-08-09 14:36:52"))
