@@ -325,6 +325,12 @@ def add_sensor():
     secret = data.get("secret", None)
     is_public_read = data.get("is_public_read", False)
 
+    if is_public_read == "0":
+        is_public_read = False
+
+    if is_public_read == "1":
+        is_public_read = True
+
     attributes = data.get("attributes", [])
 
     sensor = db.session.query(Sensors).\
