@@ -59,7 +59,7 @@
           </thead>
           <tbody>
             <tr v-for="(s, index) in sensors" v-bind:key="s.tag">
-              <th scope="row">{{index}}</th>
+              <th scope="row">{{index + 1}}</th>
               <td>{{s.tag}}</td>
               <td>{{s.description}}</td>
               <td>
