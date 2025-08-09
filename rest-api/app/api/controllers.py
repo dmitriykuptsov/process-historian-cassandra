@@ -438,7 +438,7 @@ def update_sensor():
         filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
             first()
     
-    if not permission:
+    if sensor.owner != username:
         return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
 
     sensor.description = description

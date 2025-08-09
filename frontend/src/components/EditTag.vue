@@ -66,7 +66,7 @@
           </div>
           <div class="form-group">
             <label>Added attributes</label><br/>
-            <span v-for="a in attributes" v-bind:key="a" class="badge rounded-pill bg-danger">
+            <span v-for="a in s.attributes" v-bind:key="a" class="badge rounded-pill bg-danger">
                 {{a}} <a href="#" @click="removeAttribute(e, a)">X</a>
             </span>
           </div>
@@ -91,10 +91,9 @@ import OkModal from "../components/OkModal.vue";
 
 export default {
   name: "EditTag",
-  props: [],
+  props: ["tag"],
   data() {
     return {
-      tag: null,
       secret: null,
       description: null,
       public_read: false,
@@ -126,6 +125,23 @@ export default {
         }
         this.attributes = n;
         e.preventDefault();
+    },
+    getSensor() {
+      this.showSpinner = true;
+      const token = sessionStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      };
+      const url = this.$BASE_URL + "/api/get_sensors_own/";
+      axios.post(url, {
+          tag: this.tag
+        }, { headers }).then((response) => {
+        if (!response.data.auth_fail) {
+          this.sensor = response.data.result;
+          this.showSpinner = false;
+        }
+      });
     },
     save(e) {
       this.showSpinner = true;
@@ -162,7 +178,7 @@ export default {
     }
   },
   mounted() {
-    this.getTag(this.tag)
+    this.getSensor(this.tag)
   },
   components: {
     Spinner,
