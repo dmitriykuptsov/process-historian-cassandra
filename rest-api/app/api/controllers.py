@@ -496,7 +496,6 @@ def get_data_raw_public():
             result.append({"timestamp": row[0].timestamp(), "value": row[1]})
 
     return jsonify({
-        "auth_fail": False,
         "result": result
     })
 
