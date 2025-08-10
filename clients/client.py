@@ -139,19 +139,21 @@ class PHClient():
 
 
 client = PHClient("https://process-historian.strangebit.io/")
-client.open("admin", "cicurdyifyuWyadvurlyondaizJibOts")
+#client.open("admin", "cicurdyifyuWyadvurlyondaizJibOts")
+client.open()
 #print(client.create_tag("demo_temperature_tag", "Demo sensor", "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz", ["demo", "temperature"]))
 
 
 import subprocess
 while True:
     data = []
-    current_datetime = datetime.now(UTC
+    current_datetime = datetime.now(UTC)
     process = subprocess.Popen(["cat", " /sys/class/thermal/thermal_zone0/temp"], stdout=subprocess.PIPE, text=True)
     output, errors = process.communicate()
-    value = float(output)/1000
+    #value = float(output)/1000
+    value = 10.2
     data.append({
         "timestamp": current_datetime.timestamp() * 1000,
         "value": value
     })
-    client.add_data_batch("demo_temperature_tag", data, "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz")
+    client.add_data_batch("CO2_sensor_outside", data, "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz")
