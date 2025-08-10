@@ -10,17 +10,19 @@ from Crypto.Hash import HMAC
 class PHClient():
     def __init__(self, url):
         self.url = url
-    def open(self, username, password):
+    def open(self, username = None, password = None):
         self.session = requests.session()
-        result = self.session.post(self.url + "/auth/signin/", 
+        if username:
+            result = self.session.post(self.url + "/auth/signin/", 
                                    json={"username": username, 
                                          "password": password}, 
                                     headers={"Accept": "application/json"})
-        print(result.text)
-        d = loads(result.text)
-        self.token = d["token"]
-        return d["success"]
-    
+            d = loads(result.text)
+            self.token = d["token"]
+            return d["success"]
+        else:
+            return True
+
     def __compute_hmac__(self, data, key):
         """
         Computes the HMAC of the data
