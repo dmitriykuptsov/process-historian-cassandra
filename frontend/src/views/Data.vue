@@ -4,8 +4,8 @@
       <div style="font-weight: bold; text-align: center">
         Data explorer
       </div>
-      <form class="login-form">
-          <div class="form-group">
+      <form class="data-options-form">
+          <div class="form-group" style="width: 30%; float:left; margin-right: 20px;">
             <label>Start time</label>
             <input
               type="datetime-local"
@@ -13,7 +13,7 @@
               v-model="start"
             />
           </div>
-          <div class="form-group">
+          <div class="form-group" style="width: 30%; float:left; margin-right: 20px;">
             <label>End time</label>
             <input
               type="datetime-local"
@@ -21,7 +21,7 @@
               v-model="end"
             />
           </div>
-          <div class="form-group">
+          <div class="form-group" style="width: 30%; float:left; margin-right: 20px;">
             <label>Tag name</label>
             <input
               type="text"
@@ -47,11 +47,27 @@
             </button>
           </div>
         </form>
-        <GChart
-          type="LineChart"
-          :data="chartData"
-          :options="chartOptions"
-        />
+        <div v-if="chartData.length > 1">
+          <div style="width: 45%; float:left; margin-right: 20px;">
+            <GChart
+              type="LineChart"
+              :data="chartData"
+              :options="chartOptions"
+              :height="400" 
+            />
+          </div>
+          <div style="width: 45%; float:left; margin-right: 20px;">
+            <GChart
+              type="Histogram"
+              :data="histogramData"
+              :options="histChartOptions"
+              :height="400" 
+            />
+          </div>
+        </div>
+        <div v-if="chartData.length <= 1">
+          <p style="font-weight: bold; font-size: 20px;">No data available for the selected period and tag</p>
+        </div>
     </div>
   </div>
 </template>
@@ -68,18 +84,25 @@ export default {
       sensors: [],
       start: null,
       end: null,
-      chartData: [['Date', 'Value']],
+      chartData: [['Date', 'Measurement']],
+      histogramData: [['Measurement']],
       chartOptions: {
-        title: 'Temperature sensor demo real-time data',
-        width: document.getElementById("demo"),
+        height: 400,
         hAxis: {
           title: 'Date',
-          format: 'MMM d, y', // Example date format
+          format: 'MMM d, y',
         },
         vAxis: {
-          title: 'Temperature, Celcius',
+          title: 'Tag values',
         },
         legend: { position: 'bottom' },
+      },
+      histChartOptions: {
+        height: 400,
+        title: 'Distribution of values over time',
+        legend: { position: 'none' },
+        histogram: { bucketSize: 1 },
+        vAxis: { title: 'Count' }
       }
     };
   },
@@ -144,6 +167,7 @@ export default {
             this.data = response.data.result;
             this.chartData = [['Date', 'Value']];
             for (var i = 0; i < this.data.length; i++) {
+              this.histogramData.push([this.data[i]["value"]]);
               this.chartData.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
             }
         });
