@@ -43,7 +43,7 @@
           :options="chartOptions"
         />
       </div>
-      <div style="position: absolute; bottom: 10px; left: 10px; font-weight: bold; font-size: 12px;">Powered by StrangeBit company</div>
+      <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">Powered by StrangeBit company</div>
     </div>
   </div>
 </template>
