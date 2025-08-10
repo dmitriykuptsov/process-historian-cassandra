@@ -227,8 +227,8 @@ export default {
             this.max = -1000000;
             this.n = 0
             this.std = 0
+            
             for (var i = 0; i < this.data.length; i++) {
-              this.histogramData.push([this.data[i]["value"]]);
               this.chartData.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
               this.sum += this.data[i]["value"]
               if (this.data[i]["value"] > this.max) {
