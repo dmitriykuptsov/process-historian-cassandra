@@ -48,7 +48,9 @@
         <p class="demo_title">
           Demo temperature reading from the internal sensor of NanoPi R2S
           Tag: demo_temperature_tag, start time: {{format_date(start)}}, end time: {{format_date(end)}} UTC
-          Summary statistics: Mean={{mean}}, max={{max}}, min={{min}}
+        </p>
+        <p class="demo_title" style="font-weight: bold;">
+          Summary statistics: Mean={{Math.round(mean*10)/10}}, max={{Math.round(max*10)/10}}, min={{Math.round(min*10)/10}}
         </p>
         <GChart
           type="LineChart"
