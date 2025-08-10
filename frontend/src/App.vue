@@ -19,8 +19,8 @@
               <router-link to="/data" class="nav-btn" @click="setActive('data')" v-bind:class="
                 menuItemsActive['data'] ? 'selected-menu-item' : ''
               ">Data explorer</router-link>
-              <button id="exit-btn">
-                <a href="#" @click="editUser()">Edit user</a>
+              <button class="btn btn-danger" style="margin-right: 20px;">
+                <a href="#" @click="callEditUser()" >Edit user</a>
               </button>
               <button id="exit-btn">
                 <a href="#" @click="logout()">Logout</a>
@@ -123,8 +123,8 @@ export default {
     };
   },
   methods: {
-    editUser() {
-      this.showEdituser = true;
+    callEditUser() {
+      this.showEditUser = true;
     },
     hideEditUser() {
       this.showEditUser = false;
@@ -241,7 +241,7 @@ export default {
   components: {
     Login,
     GChart,
-    EditUser
+    EditUser,
   },
 };
 </script>

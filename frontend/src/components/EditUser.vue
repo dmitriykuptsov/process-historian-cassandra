@@ -67,7 +67,7 @@ export default {
       showError: false,
       errorHeader: "Error",
       errorMessage: "",
-      showSpinner: false,
+      showSpinner: true,
       user: {}
     };
   },

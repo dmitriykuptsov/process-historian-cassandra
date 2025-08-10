@@ -24,7 +24,7 @@ def hash_password(password, salt):
     Hashes password
     """
     h = SHA256.new()
-    h.update(str.encode(password + salt, encoding="UTF-8"))
+    h.update(password + salt)
     c_hashed = h.hexdigest()
     return  bytes(c_hashed, encoding="UTF-8")
 
