@@ -61,20 +61,55 @@
           Demo temperature reading from the internal sensor of NanoPi R2S
           Tag: demo_temperature_tag, start time: {{format_date(start)}}, end time: {{format_date(end)}} UTC
         </p>
-        <p class="demo_title" style="font-weight: bold;">
+        <!-- p class="demo_title" style="font-weight: bold;">
           Summary statistics: Mean={{Math.round(mean*10)/10}}, max={{Math.round(max*10)/10}}, min={{Math.round(min*10)/10}}
-        </p>
+        </p-->
+        
         <div v-if="chartData.length > 1">
           <GChart
-          type="LineChart"
-          :data="chartData"
-          :options="chartOptions"
-        />
+            type="LineChart"
+            :data="chartData"
+            :options="chartOptions"
+          />
         </div>
         <div v-if="chartData.length <= 1">
           <p style="font-weight: bold; font-size: 20px;">No data available for the selected period and tag</p>
         </div>
-        
+        <div>
+          <p class="summary_title" style="font-weight: bold;">
+            Summary statistics
+          </p>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Statistic</th>
+                <th>Measurement</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Number of measurements</td>
+                <td>{{n}}</td>
+              </tr>
+              <tr>
+                <td>Minimum value</td>
+                <td>{{Math.round(min*10)/10}}</td>
+              </tr>
+              <tr>
+                <td>Maximum value</td>
+                <td>{{Math.round(max*10)/10}}</td>
+              </tr>
+              <tr>
+                <td>Mean value</td>
+                <td>{{Math.round(mean*10)/10}}</td>
+              </tr>
+              <tr>
+                <td>Standard deviation</td>
+                <td>{{Math.round(std*10)/10}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">
         Powered by StrangeBit company
@@ -105,6 +140,8 @@ export default {
       max: 0,
       sum: 0,
       mean: 0,
+      std: 0,
+      n: 0,
       start: Date(),
       end: Date(),
       chartData: [['Date', 'Value']],
@@ -183,13 +220,15 @@ export default {
         .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
         .then((response) => {
             this.data = response.data.result;
+            this.chartData = [['Date', 'Value']];
             this.sum = 0;
             this.mean = 0;
             this.min = 1000000;
             this.max = -1000000;
-            var n = 0
-            this.chartData = [['Date', 'Value']];
+            this.n = 0
+            this.std = 0
             for (var i = 0; i < this.data.length; i++) {
+              this.histogramData.push([this.data[i]["value"]]);
               this.chartData.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
               this.sum += this.data[i]["value"]
               if (this.data[i]["value"] > this.max) {
@@ -198,9 +237,16 @@ export default {
               if (this.data[i]["value"] < this.min) {
                 this.min = this.data[i]["value"]
               }
-              n += 1  
+              this.n += 1  
             }
-            this.mean = this.sum / n;
+
+            this.mean = this.sum / this.n;
+
+            for (i = 0; i < this.data.length; i++) {
+              this.std += (this.data[i]["value"] - this.mean) * (this.data[i]["value"] - this.mean)
+            }
+            this.std = this.std / this.n
+            this.std = Math.sqrt(this.std)
         });
     },
     logout() {
