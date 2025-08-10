@@ -34,13 +34,17 @@
       <pre><code>
       # Python client usage example
       client = PHClient("https://process-historian.strangebit.io/")
+      # Open the connection and authenticate
       client.open("admin", "password")
+      data = []
+      # Add data points
       current_datetime = datetime.now(UTC)
-      value = 10.1
+      value = random.randint(0, 100)
       data.append({
         "timestamp": current_datetime.timestamp() * 1000,
         "value": value
       })
+      # Store the data in the cloud
       client.add_data_batch("demo_temperature_tag", data, "master-secret")
 
       </code></pre>
