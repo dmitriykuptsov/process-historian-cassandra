@@ -92,6 +92,47 @@ def get_users():
         "result": result
     })
 
+@mod_api.route("/get_user/", methods=["POST"])
+def get_users():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    
+    username = get_subject(request, config)
+
+    user = db.session.query(Users).filter(db.and_(Users.username == username)).first()
+
+    return jsonify({
+        "auth_fail": False,
+        "result": {
+            "username": user.username,
+            "email": user.email
+        }
+    })
+
+@mod_api.route("/update_password/", methods=["POST"])
+def update_password():
+
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    password = data.get("password", "")
+    username = data.get("username", "")
+    
+
+    user = db.session.query(Users).filter(db.and_(Users.username == username)).first()
+    
+    if not user:
+        return jsonify({"auth_fail": False, "result": False, "reason": "User was not found"})
+        
+    user.password = hash_password(password.encode("UTF-8"), user.salt.encode("UTF-8"))
+    db.session.commit()
+
+    return jsonify({
+        "auth_fail": False,
+        "result": True
+    })
+
 @mod_api.route("/add_permission_to_sensor/", methods=["POST"])
 def add_permission_to_sensor():
 

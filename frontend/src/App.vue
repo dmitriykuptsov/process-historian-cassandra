@@ -5,6 +5,11 @@
         <div class="title">
           <span id="caption-text">Time-series storage and analytics service by StrangeBit</span>
         </div>
+        <EditUser
+          v-if="showEditUser"
+          v-on:save="hideEditUser"
+          v-on:cancel="hideEditUser"
+        />
         <div class="menu_container">
           <div class="menu">
             <div id="nav">
@@ -14,6 +19,9 @@
               <router-link to="/data" class="nav-btn" @click="setActive('data')" v-bind:class="
                 menuItemsActive['data'] ? 'selected-menu-item' : ''
               ">Data explorer</router-link>
+              <button id="exit-btn">
+                <a href="#" @click="editUser()">Edit user</a>
+              </button>
               <button id="exit-btn">
                 <a href="#" @click="logout()">Logout</a>
               </button>
@@ -82,6 +90,7 @@
 import axios from "axios";
 import Login from "@/views/Login.vue";
 import { GChart } from 'vue-google-charts';
+import EditUser from "./components/EditUser.vue";
 
 export default {
   name: "App",
@@ -90,6 +99,7 @@ export default {
       isAuthenticated: false,
       loaded: false,
       menuItemsActive: {},
+      showEditUser: false,
       data: [],
       min: 0,
       max: 0,
@@ -113,6 +123,12 @@ export default {
     };
   },
   methods: {
+    editUser() {
+      this.showEdituser = true;
+    },
+    hideEditUser() {
+      this.showEditUser = false;
+    },
     checkAuth() {
       const token = sessionStorage.getItem("token");
       const headers = {
@@ -224,7 +240,8 @@ export default {
   },
   components: {
     Login,
-    GChart
+    GChart,
+    EditUser
   },
 };
 </script>

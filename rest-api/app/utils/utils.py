@@ -56,6 +56,7 @@ def check_password(password, salt, hashed):
     c_hashed = h.hexdigest()
     return  bytes(c_hashed, encoding="UTF-8") == hashed 
 
+
 def encode_jwt(username, salt, server_nonce, days, key):
     """
     Create an ecoded JSON token
