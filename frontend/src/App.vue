@@ -52,11 +52,17 @@
         <p class="demo_title" style="font-weight: bold;">
           Summary statistics: Mean={{Math.round(mean*10)/10}}, max={{Math.round(max*10)/10}}, min={{Math.round(min*10)/10}}
         </p>
-        <GChart
+        <div v-if="chartData.length > 1">
+          <GChart
           type="LineChart"
           :data="chartData"
           :options="chartOptions"
         />
+        </div>
+        <div v-if="chartData.length <= 1">
+          <p style="font-weight: bold; font-size: 20px;">No data available for the selected period and tag</p>
+        </div>
+        
       </div>
       <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">Powered by StrangeBit company</div>
     </div>
