@@ -653,3 +653,108 @@ def get_data_raw_public():
         "result": result
     })
 
+
+@mod_api.route("/get_data_raw_with_aggregation/", methods=["POST"])
+def get_data_raw_with_aggregation():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+
+    username = get_subject(request, config)
+
+    tag = data.get("tag", None)
+
+    aggregation = data.get("aggregation", "raw")
+    interval = date.get("interval", 5)
+
+    format_string = "%Y-%m-%d %H:%M:%S"
+
+    start = data.get("start", None)
+    end = data.get("end", None)
+
+    start = datetime.strptime(start, format_string)
+    end = datetime.strptime(end, format_string)
+
+    ts_start = int(start.timestamp() * 1000)
+    ts_end = int(end.timestamp() * 1000)
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag))). \
+            first()
+
+    if not sensor:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
+	
+    permission = db.session.query(SensorPermissions).\
+            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
+                first()
+    
+    if not permission:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
+
+
+    buckets = []
+    current_date = start
+    while current_date <= end:
+        formatted_date = current_date.strftime("%Y-%m-%d")
+        buckets.append((tag, formatted_date))
+        current_date += timedelta(days=1)
+
+    query = "SELECT ts, value FROM ph WHERE tag = %s AND date_bucket = %s AND ts >= %s AND ts <= %s"
+    result = []
+
+    start = None
+    min = None
+    max = None
+    sum = 0
+    n = 0
+
+    for bucket in buckets:
+        statement = SimpleStatement(query, consistency_level=ConsistencyLevel.QUORUM)
+        rows = session.execute(statement, (bucket[0], bucket[1], ts_start, ts_end, ))
+        for row in rows:
+            if not start:
+                start = row[0].timestamp()
+            if aggregation == "avg":
+                if row[0].timestamp() - start < interval * 60:
+                    sum += row[1]
+                    n += 1
+                else:
+                    result.append({"timestamp": start, "value": sum / n})
+                    start = row[0].timestamp()
+                    sum = row[1]
+                    n = 1
+            elif aggregation == "min":
+                if row[0].timestamp() - start < interval * 60 * 1000:
+                    if min and min > row[1]:
+                        min = row[1]
+                    if not min:
+                        min = row[1]
+                else:
+                    result.append({"timestamp": start, "value": min})
+                    start = row[0].timestamp()
+                    min = row[1]
+                    n = 1
+            elif aggregation == "max":
+                if row[0].timestamp() - start < interval * 60 * 1000:
+                    if max and max > row[1]:
+                        max = row[1]
+                    if not max:
+                        max = row[1]
+                else:
+                    result.append({"timestamp": start, "value": max})
+                    start = row[0].timestamp()
+                    max = row[1]
+                    n = 1
+            else:
+                result.append({"timestamp": row[0].timestamp(), "value": row[1]})
+            
+            
+
+    return jsonify({
+        "auth_fail": False,
+        "result": result
+    })
