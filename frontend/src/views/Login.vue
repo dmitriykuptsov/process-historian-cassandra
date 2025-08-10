@@ -1,11 +1,12 @@
 <template>
   <div class="login-main">
-    <div class="login-text">
-      <h3>
-        Time-series storage and analytics service
-      </h3>
-    </div>
+    
     <div class="login-div">
+      <div class="login-text" style="left: -50%; top: 0%; position: relative;">
+        <h3>
+          Time-series storage and analytics service
+        </h3>
+      </div>
       <OkModal
         v-bind:header="header"
         v-bind:message="message"
@@ -117,7 +118,7 @@ h3 {
   height: 300px;
 
   /* Center form on page horizontally & vertically */
-  top: 420px;
+  top: 300px;
   left: 50%;
   margin-top: -150px;
   margin-left: -225px;

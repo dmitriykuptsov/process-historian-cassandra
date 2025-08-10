@@ -29,7 +29,9 @@
       <router-view></router-view>
     </div>
     <div v-if="!isAuthenticated">
+      <img class="strangebit" src="@/assets/distributed-database.png" alt="Database"/>
       <Login />
+      
       <div class="demo" id="demo">
         <p class="demo_title">
           Demo temperature reading from the internal sensor of NanoPi R2S
@@ -41,6 +43,7 @@
           :options="chartOptions"
         />
       </div>
+      <div style="position: absolute; bottom: 10px; left: 10px; font-weight: bold; font-size: 12px;">Powered by StrangeBit company</div>
     </div>
   </div>
 </template>
@@ -179,6 +182,13 @@ export default {
 </script>
 
 <style scoped>
+
+.strangebit {
+  position: absolute;
+  left: 45%;
+  top: 50px;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
