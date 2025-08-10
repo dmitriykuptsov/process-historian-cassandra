@@ -64,6 +64,41 @@
               :height="400" 
             />
           </div>
+          <div>
+            <p class="summary_title" style="font-weight: bold;">
+              Summary statistics
+            </p>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Statistic</th>
+                  <th>Measurement</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Number of measurements</td>
+                  <td>{{n}}</td>
+                </tr>
+                <tr>
+                  <td>Minimum value</td>
+                  <td>{{Math.round(min*10)/10}}</td>
+                </tr>
+                <tr>
+                  <td>Maximum value</td>
+                  <td>{{Math.round(max*10)/10}}</td>
+                </tr>
+                <tr>
+                  <td>Mean value</td>
+                  <td>{{Math.round(mean*10)/10}}</td>
+                </tr>
+                <tr>
+                  <td>Standard deviation</td>
+                  <td>{{Math.round(std*10)/10}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
         <div v-if="chartData.length <= 1">
           <p style="font-weight: bold; font-size: 20px;">No data available for the selected period and tag</p>
@@ -84,6 +119,12 @@ export default {
       sensors: [],
       start: null,
       end: null,
+      min: 0,
+      max: 0,
+      sum: 0,
+      mean: 0,
+      std: 0,
+      n: 0,
       chartData: [['Date', 'Measurement']],
       histogramData: [['Measurement']],
       chartOptions: {
@@ -166,10 +207,32 @@ export default {
         .then((response) => {
             this.data = response.data.result;
             this.chartData = [['Date', 'Value']];
+            this.sum = 0;
+            this.mean = 0;
+            this.min = 1000000;
+            this.max = -1000000;
+            this.n = 0
+            this.std = 0
             for (var i = 0; i < this.data.length; i++) {
               this.histogramData.push([this.data[i]["value"]]);
               this.chartData.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+              this.sum += this.data[i]["value"]
+              if (this.data[i]["value"] > this.max) {
+                this.max = this.data[i]["value"]
+              }
+              if (this.data[i]["value"] < this.min) {
+                this.min = this.data[i]["value"]
+              }
+              this.n += 1  
             }
+
+            this.mean = this.sum / this.n;
+
+            for (i = 0; i < this.data.length; i++) {
+              this.std += (this.data[i]["value"] - this.mean) * (this.data[i]["value"] - this.mean)
+            }
+            this.std = this.std / this.n
+            this.std = Math.sqrt(this.std)
         });
       e.preventDefault();
     },},
@@ -188,5 +251,11 @@ export default {
   display: inline;
   margin-left: 0px;
   margin-right: 0px;
+}
+
+.summary_title {
+  color:darkgray;
+  width: 50%;
+  margin-left: 25%;
 }
 </style>
