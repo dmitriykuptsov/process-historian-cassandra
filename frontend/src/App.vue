@@ -48,6 +48,7 @@
         <p class="demo_title">
           Demo temperature reading from the internal sensor of NanoPi R2S
           Tag: demo_temperature_tag, start time: {{format_date(start)}}, end time: {{format_date(end)}} UTC
+          Summary statistics: Mean={{mean}}, max={{max}}, min={{min}}
         </p>
         <GChart
           type="LineChart"
@@ -73,6 +74,10 @@ export default {
       loaded: false,
       menuItemsActive: {},
       data: [],
+      min: 0,
+      max: 0,
+      sum: 0,
+      mean: 0,
       start: Date(),
       end: Date(),
       chartData: [['Date', 'Value']],
@@ -145,10 +150,24 @@ export default {
         .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
         .then((response) => {
             this.data = response.data.result;
+            this.sum = 0;
+            this.mean = 0;
+            this.min = 1000000;
+            this.max = -1000000;
+            var n = 0
             this.chartData = [['Date', 'Value']];
             for (var i = 0; i < this.data.length; i++) {
               this.chartData.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+              this.sum += this.data[i]["value"]
+              if (this.data[i]["value"] > this.max) {
+                this.max = this.data[i]["value"]
+              }
+              if (this.data[i]["value"] < this.min) {
+                this.min = this.data[i]["value"]
+              }
+              n += 1  
             }
+            this.mean = this.sum / n;
         });
     },
     logout() {
