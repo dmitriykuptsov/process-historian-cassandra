@@ -93,7 +93,7 @@ def get_users():
     })
 
 @mod_api.route("/get_user/", methods=["POST"])
-def get_users():
+def get_user():
     if not is_valid_session(request, config):
         return jsonify({"auth_fail": True})
     
