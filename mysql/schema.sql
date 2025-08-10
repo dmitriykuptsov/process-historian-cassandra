@@ -2,6 +2,13 @@ create database ph;
 
 use ph;
 
+create table if not exists Verifications (
+    username varchar(100),
+    email varchar(100) NOT NULL,
+    token varchar(256) NOT NULL,
+    exp INT DEFAULT 0
+)
+
 create table if not exists Users (
     username varchar(100) PRIMARY KEY,
     email varchar(100),
