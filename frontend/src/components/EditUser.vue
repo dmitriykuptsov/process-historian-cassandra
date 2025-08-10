@@ -32,7 +32,7 @@
           <div class="form-group">
             <label>New password</label>
             <input
-              type="text"
+              type="password"
               class="form-control form-control-lg"
               v-model="user.password"
             />
