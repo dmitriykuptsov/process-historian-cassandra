@@ -10,17 +10,19 @@ from Crypto.Hash import HMAC
 class PHClient():
     def __init__(self, url):
         self.url = url
-    def open(self, username, password):
+    def open(self, username = None, password = None):
         self.session = requests.session()
-        result = self.session.post(self.url + "/auth/signin/", 
+        if username:
+            result = self.session.post(self.url + "/auth/signin/", 
                                    json={"username": username, 
                                          "password": password}, 
                                     headers={"Accept": "application/json"})
-        print(result.text)
-        d = loads(result.text)
-        self.token = d["token"]
-        return d["success"]
-    
+            d = loads(result.text)
+            self.token = d["token"]
+            return d["success"]
+        else:
+            return True
+
     def __compute_hmac__(self, data, key):
         """
         Computes the HMAC of the data
@@ -137,19 +139,21 @@ class PHClient():
 
 
 client = PHClient("https://process-historian.strangebit.io/")
-client.open("admin", "cicurdyifyuWyadvurlyondaizJibOts")
+#client.open("admin", "cicurdyifyuWyadvurlyondaizJibOts")
+client.open()
 #print(client.create_tag("demo_temperature_tag", "Demo sensor", "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz", ["demo", "temperature"]))
 
 
 import subprocess
 while True:
     data = []
-    current_datetime = datetime.now(UTC
+    current_datetime = datetime.now(UTC)
     process = subprocess.Popen(["cat", " /sys/class/thermal/thermal_zone0/temp"], stdout=subprocess.PIPE, text=True)
     output, errors = process.communicate()
-    value = float(output)/1000
+    #value = float(output)/1000
+    value = 10.2
     data.append({
         "timestamp": current_datetime.timestamp() * 1000,
         "value": value
     })
-    client.add_data_batch("demo_temperature_tag", data, "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz")
+    client.add_data_batch("CO2_sensor_outside", data, "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz")
