@@ -31,7 +31,19 @@
     <div v-if="!isAuthenticated">
       <img class="strangebit" src="@/assets/distributed-database.png" alt="Database"/>
       <Login />
-      
+      <pre><code>
+      # Python client usage example
+      client = PHClient("https://process-historian.strangebit.io/")
+      client.open("admin", "password")
+      current_datetime = datetime.now(UTC)
+      value = 10.1
+      data.append({
+        "timestamp": current_datetime.timestamp() * 1000,
+        "value": value
+      })
+      client.add_data_batch("demo_temperature_tag", data, "master-secret")
+
+      </code></pre>
       <div class="demo" id="demo">
         <p class="demo_title">
           Demo temperature reading from the internal sensor of NanoPi R2S
@@ -182,6 +194,24 @@ export default {
 </script>
 
 <style scoped>
+
+pre {
+    position: absolute;
+    bottom: 300px;
+    width: 400px;
+    background-color: #f4f4f4;
+    color: darkgreen;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    overflow-x: auto; 
+}
+
+code {
+    font-size: 8px;
+    color: darkgreen;
+    font-family: "Courier New", Courier, monospace;
+}
 
 .strangebit {
   position: absolute;
