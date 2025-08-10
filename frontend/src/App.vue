@@ -68,7 +68,12 @@
         </div>
         
       </div>
-      <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">Powered by StrangeBit company</div>
+      <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">
+        Powered by StrangeBit company
+      </div>
+      <div style="position: absolute; top: 30px; left: 10px; font-weight: bold; font-size: 12px;">
+        <a href="https://github.com/dmitriykuptsov/process-historian-cassandra"><img src="@/assets/github.png" height="40"/></a>
+      </div>
     </div>
   </div>
 </template>
