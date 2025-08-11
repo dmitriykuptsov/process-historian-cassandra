@@ -7,6 +7,8 @@ from datetime import datetime, UTC
 from Crypto.Hash import SHA256
 from Crypto.Hash import HMAC
 
+ALERT_TYPES = {"MAX_OVERSHOOT": 0, "MIN_OVERSHOOT": 1}
+
 class PHClient():
     def __init__(self, url):
         self.url = url
@@ -18,8 +20,8 @@ class PHClient():
                                          "password": password}, 
                                     headers={"Accept": "application/json"})
             d = loads(result.text)
-            self.token = d["token"]
-            return d["success"]
+            self.token = d.get("token", None)
+            return d.get("success", False)
         else:
             return True
 
@@ -90,6 +92,22 @@ class PHClient():
         d = loads(result.text)
         return d["result"]
     
+    def get_alerts(self, tag, start, end):
+        result = self.session.post(self.url + "/api/get_alerts/",
+                    json={"tag": tag, "start": start, "end": end},
+                    headers={"Accept": "application/json",
+                            "Authorization": "Bearer " + self.token})
+        print(result.text)
+        d = loads(result.text)
+        return d["result"]
+    
+    def get_alerts_public(self, tag, start, end):
+        result = self.session.post(self.url + "/api/get_alerts_public/",
+                    json={"tag": tag, "start": start, "end": end},
+                    headers={"Accept": "application/json"})
+        d = loads(result.text)
+        return d["result"]
+    
     def add_data(self, tag, timestamp, value, secret):
 
         data_to_sign = dumps([{
@@ -136,14 +154,48 @@ class PHClient():
         
         d = loads(result.text)
         return d["result"]  
+    
+    def add_alert_batch(self, tag, data, secret):
+
+        data_to_sign = dumps(data)
+        hmac = self.__compute_hmac__(data_to_sign, secret)
+
+        data = {
+                "alerts": {
+                    tag: {
+                        "data": data, 
+                        "hmac": hmac
+                    }
+                }
+            }
+
+        result = self.session.post(self.url + "/injection/add_alert/", 
+            json=data, 
+            headers={"Accept": "application/json"})
+        
+        d = loads(result.text)
+        return d["result"]  
 
 
-client = PHClient("https://process-historian.strangebit.io/")
-#client.open("admin", "cicurdyifyuWyadvurlyondaizJibOts")
-client.open()
+#client = PHClient("https://process-historian.strangebit.io/")
+client = PHClient("http://192.168.1.244:5006/")
+client.open("admin", "pass")
 #print(client.create_tag("demo_temperature_tag", "Demo sensor", "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz", ["demo", "temperature"]))
 
 
+data = []
+current_datetime = datetime.now(UTC)
+value = ALERT_TYPES["MAX_OVERSHOOT"]
+data.append({
+    "timestamp": current_datetime.timestamp() * 1000,
+    "type": value,
+    "comment": "This is a comment"
+})
+
+client.add_alert_batch("alert_tag_demo", data, "123456")
+print(client.get_alerts("alert_tag_demo", "2025-08-09 00:00:00", "2025-08-13 00:00:00"))
+
+"""
 import subprocess
 while True:
     data = []
@@ -157,3 +209,4 @@ while True:
         "value": value
     })
     client.add_data_batch("CO2_sensor_outside", data, "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz")
+"""
