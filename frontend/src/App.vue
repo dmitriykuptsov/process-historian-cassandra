@@ -80,7 +80,7 @@
             Last alerts
           </p>
           <span v-for="a in alerts" v-bind:key="a" class="badge rounded-pill bg-danger">
-            Time: {{ format_date(a.timestamp) }} Type: {{a.type}}
+            Time: {{ format_date(new Date(a.timestamp)) }} Type: {{a.type}}
           </span>
         </div>
         <div>
