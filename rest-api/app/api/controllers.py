@@ -609,12 +609,14 @@ def get_data_raw():
 
 @mod_api.route("/get_alerts/", methods=["POST"])
 def get_alerts():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
     data = request.get_json(force=True)
     if not data:
         return jsonify({"auth_fail": False, "result": False})
 
     username = get_subject(request, config)
-    
+
     tag = data.get("tag", None)
 
     format_string = "%Y-%m-%d %H:%M:%S"
