@@ -312,7 +312,7 @@ def get_filters():
         return jsonify({"auth_fail": True})
     
     s = []
-    for f in Filters.ALLOWED_FILTERS:
+    for f in filters.ALLOWED_FILTERS:
         s.append({
             "filter_name": filters.Filter.filter_to_human_readable(f),
             "filter": f
