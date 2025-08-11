@@ -96,7 +96,7 @@ def add_data():
 
         filters = db.session.query(SensorFilter).\
             filter(db.and_(SensorFilter.tag.ilike(tag))). \
-                first()
+                all()
 
         insert_points = session.prepare('INSERT INTO ph (tag, date_bucket, ts, value) VALUES (?, ?, ?, ?)')
         batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
