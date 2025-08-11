@@ -102,7 +102,9 @@
                   <td>{{f.filter_name}} </td>
                   <td>{{f.value}} </td>
                   <td>
-                    <button class="btn btn-danger" @click="editFilter($event, sensor.tag, f.filter_name, f.filter, f.value)">Edit</button>
+                    <button class="btn btn-primary" @click="editFilter($event, sensor.tag, f.filter_name, f.filter, f.value)">Edit</button>
+                    &nbsp;&nbsp;&nbsp;
+                    <button class="btn btn-danger" @click="deleteFilter($event, sensor.tag, f.filter)">Delete</button>
                   </td>
                 </tr>
               </tbody>
@@ -190,6 +192,25 @@ export default {
         }
         this.sensor.attributes = n;
         e.preventDefault();
+    },
+    deleteFilter(e, tag, type) {
+      this.showSpinner = true;
+      const token = sessionStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      };
+      const url = this.$BASE_URL + "/api/delete_sensor_alerts_filter/";
+      axios.post(url, {
+          tag: tag,
+          filter: type
+        }, { headers }).then((response) => {
+        if (!response.data.auth_fail) {
+          this.getSensor(tag)
+          this.showSpinner = false;
+        }
+      });
+      e.preventDefault()
     },
     getSensor() {
       this.showSpinner = true;

@@ -132,7 +132,7 @@ export default {
   border: rgb(169, 255, 202);
   background-color: white;
   position: fixed;
-  width: 500px;
+  width: 600px;
   height: 600px;
   top: 50%;
   left: 50%;
