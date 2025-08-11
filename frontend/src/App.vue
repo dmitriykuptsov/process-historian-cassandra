@@ -77,6 +77,14 @@
         </div>
         <div>
           <p class="summary_title" style="font-weight: bold;">
+            Last alerts
+          </p>
+          <span v-for="a in alerts" v-bind:key="a" class="badge rounded-pill bg-danger">
+            Time: {{ a.timestamp }} Type: {{a.type}}
+          </span>
+        </div>
+        <div>
+          <p class="summary_title" style="font-weight: bold;">
             Summary statistics
           </p>
           <table class="table table-striped">
@@ -136,6 +144,7 @@ export default {
       menuItemsActive: {},
       showEditUser: false,
       data: [],
+      alerts: [],
       min: 0,
       max: 0,
       sum: 0,
@@ -205,6 +214,23 @@ export default {
       } catch(e) {
         return ""
       }      
+    },
+    getLastAlerts() {
+      //
+      var start = new Date();
+      var end = new Date()
+      start.setHours(start.getHours() - 6);
+      this.start = start;
+      this.end = end;
+      const data = {tag: "demo_temperature_tag", start: this.format_date(start), end: this.format_date(end)}
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      axios
+        .post(this.$BASE_URL + "/api/get_alerts_public/", data, { headers })
+        .then((response) => {
+            this.alerts = response.data.result;
+        });
     },
     getDemoTagData() {
       var start = new Date();
@@ -277,6 +303,7 @@ export default {
     },
   },
   mounted() {
+    this.getLastAlerts();
     this.getDemoTagData();
     this.checkAuth();
     this.pollAuthData();
