@@ -24,3 +24,12 @@ class SensorPermissions(db.Model):
 	username           = db.Column(db.String(100), nullable = False, primary_key = True)
 	owner              = db.Column(db.String(100), nullable = False)
 	allowed            = db.Column(db.Boolean, nullable = False, default = True)
+
+class SensorAlerts(db.Model):
+	
+	__tablename__      = "Alerts"
+
+	tag                = db.Column(db.String(100), nullable = False, primary_key = True)
+	timestamp          = db.Column(db.Date, nullable = False, primary_key = True)
+	type               = db.Column(db.Integer, nullable = False, primary_key = True)
+	comment            = db.Column(db.String(100), nullable = True, default = "")

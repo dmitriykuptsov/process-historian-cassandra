@@ -47,4 +47,17 @@ create table if not exists SensorPermissions (
         ON DELETE CASCADE
 );
 
+create table if not exists Alerts(
+    tag varchar(100) not null,
+    timestamp datetime not null,
+    type int not null,
+    comment varchar(100) default "",
+    PRIMARY KEY(tag, timestamp, type),
+    FOREIGN KEY (tag)
+        REFERENCES Sensors(tag) 
+        ON DELETE CASCADE
+);
+
+
+
 INSERT INTO Users(username, password, salt) VALUES("admin", SHA2(CONCAT("password", "DanWocsAtAv8"), 256), "DanWocsAtAv8");

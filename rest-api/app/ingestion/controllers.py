@@ -49,6 +49,7 @@ from json import dumps
 # Database models
 from app.api.models import Sensors
 from app.api.models import Attributes
+from app.api.models import SensorAlerts
 
 # Import SQLAlchemy functions
 from sqlalchemy.sql import func
@@ -115,6 +116,57 @@ def add_data():
                     "result": False
                 })
         session.execute(batch)
+
+    return jsonify({
+        "auth_fail": False,
+        "result": True
+    })
+
+
+@mod_injection.route("/add_alert/", methods=["POST"])
+def add_alert():
+
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    data = data.get("alerts", {})
+
+    for sensor in data.keys():
+        tag = sensor
+        
+        sensor_ = db.session.query(Sensors).\
+            filter(db.and_(Sensors.tag.ilike(tag))). \
+                first()
+        
+        if not sensor_:
+            continue
+
+        data_ = data[tag]["data"]
+        hmac = data[tag]["hmac"]
+        data_b = dumps(data_)
+        
+        if hmac != compute_hmac(data_b, sensor_.master_secret):
+            print("Invalid HMAC")
+            continue
+
+        for p in data[tag]["data"]:
+            try:
+                date_object = datetime.fromtimestamp(float(p["timestamp"]) / 1000)
+                alert = SensorAlerts()
+                alert.tag = tag
+                alert.timestamp = date_object
+                alert.type = p["type"]
+                alert.comment = p["comment"]
+                db.session.add(alert)
+                db.session.commit()
+
+            except Exception as e:
+                print(e)
+                return jsonify({
+                    "auth_fail": False,
+                    "result": False
+                })
 
     return jsonify({
         "auth_fail": False,

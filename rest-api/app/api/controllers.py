@@ -48,6 +48,7 @@ from app.api.models import Sensors
 from app.api.models import Attributes
 from app.auth.models import Users
 from app.api.models import SensorPermissions
+from app.api.models import SensorAlerts
 
 # Import SQLAlchemy functions
 from sqlalchemy.sql import func
@@ -606,6 +607,55 @@ def get_data_raw():
         "result": result
     })
 
+@mod_api.route("/get_alerts/", methods=["POST"])
+def get_alerts():
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+
+    tag = data.get("tag", None)
+
+    format_string = "%Y-%m-%d %H:%M:%S"
+
+    start = data.get("start", None)
+    end = data.get("end", None)
+
+    start = datetime.strptime(start, format_string)
+    end = datetime.strptime(end, format_string)
+
+    ts_start = int(start.timestamp() * 1000)
+    ts_end = int(end.timestamp() * 1000)
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag))). \
+            first()
+
+    if not sensor:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
+	
+    permission = db.session.query(SensorPermissions).\
+            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
+                first()
+    
+    if not permission:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
+
+    result = []
+
+    alerts = db.session.query(SensorAlerts).filter(db.and_(SensorAlerts.tag == tag, \
+                                                           SensorAlerts.timestamp <= end, \
+                                                           SensorAlerts.timestamp >= start)).all()
+    for alert in alerts:
+        result.append({
+            "timestamp": alert.timestamp, 
+            "type": alert.type,
+            "comment": alert.comment
+        })
+
+    return jsonify({
+        "result": result
+    })
+
 @mod_api.route("/get_data_raw_public/", methods=["POST"])
 def get_data_raw_public():
     data = request.get_json(force=True)
@@ -651,6 +701,52 @@ def get_data_raw_public():
         rows = session.execute(statement, (bucket[0], bucket[1], ts_start, ts_end, ))
         for row in rows:
             result.append({"timestamp": row[0].timestamp(), "value": row[1]})
+
+    return jsonify({
+        "result": result
+    })
+
+@mod_api.route("/get_alerts_public/", methods=["POST"])
+def get_alerts_public():
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+
+    tag = data.get("tag", None)
+
+    format_string = "%Y-%m-%d %H:%M:%S"
+
+    start = data.get("start", None)
+    end = data.get("end", None)
+
+    start = datetime.strptime(start, format_string)
+    end = datetime.strptime(end, format_string)
+
+    ts_start = int(start.timestamp() * 1000)
+    ts_end = int(end.timestamp() * 1000)
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag))). \
+            first()
+
+    if not sensor:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Sensor does not exist"})
+	
+    if sensor.is_public_read != 0x1:
+        return jsonify({"auth_fail": False, "result": False, "reason": "Permission denied"})
+
+
+    result = []
+
+    alerts = db.session.query(SensorAlerts).filter(db.and_(SensorAlerts.tag == tag, \
+                                                           SensorAlerts.timestamp <= end, \
+                                                           SensorAlerts.timestamp >= start)).all()
+    for alert in alerts:
+        result.append({
+            "timestamp": alert.timestamp, 
+            "type": alert.type,
+            "comment": alert.comment
+        })
 
     return jsonify({
         "result": result
