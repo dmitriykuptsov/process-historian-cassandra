@@ -112,6 +112,9 @@ def get_user():
 @mod_api.route("/update_password/", methods=["POST"])
 def update_password():
 
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+
     data = request.get_json(force=True)
     if not data:
         return jsonify({"auth_fail": False, "result": False})
