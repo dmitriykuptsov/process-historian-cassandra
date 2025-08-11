@@ -613,6 +613,8 @@ def get_alerts():
     if not data:
         return jsonify({"auth_fail": False, "result": False})
 
+    username = get_subject(request, config)
+    
     tag = data.get("tag", None)
 
     format_string = "%Y-%m-%d %H:%M:%S"
