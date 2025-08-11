@@ -6,6 +6,21 @@
       v-bind:header="errorHeader"
       v-on:confirm="hideErrorMessage"
     />
+    <EditFilter
+      v-if="showEditFilter"
+      v-bind:tag="tag"
+      v-bind:type="selectedType"
+      v-bind:name="selectedNmae"
+      v-bind:threshold="threshold"
+      v-on:save="hideEditFilter"
+      v-on:cancel="hideEditFilter"
+    />
+    <AddFilter
+      v-if="showAddFilter"
+      v-bind:tag="tag"
+      v-on:save="hideEditFilter"
+      v-on:cancel="hideEditFilter"
+    />
     <Spinner v-if="showSpinner" />
     <div class="modal-window">
       <div class="header">Editing of existing tag</div>
@@ -70,6 +85,29 @@
                 {{a}} <a href="#" @click="removeAttribute(e, a)">X</a>
             </span>
           </div>
+          <div class="form-group">
+            <button class="btn btn-danger" @click="addFilter($event, sensor.tag)">Add filter</button>
+            <br/>
+            <label>Added filters</label><br/>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Filter type</th>
+                  <th>Filter threshold</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="f in sensor.filters" v-bind:key="f.filter_name">
+                  <td>{{f.filter_name}} </td>
+                  <td>{{f.value}} </td>
+                  <td>
+                    <button class="btn btn-danger" @click="editFilter($event, sensor.tag, f.filter_name, f.filter, f.value)">Edit</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <div class="form-group" style="margin-top: 10px">
             <button @click="save" class="btn btn-dark btn-lg btn-block save">
               Update tag
@@ -88,6 +126,8 @@
 import axios from "axios";
 import Spinner from "../components/Spinner.vue";
 import OkModal from "../components/OkModal.vue";
+import EditFilter from "../components/EditFilter.vue";
+import AddFilter from "../components/AddFilter.vue";
 
 export default {
   name: "EditTag",
@@ -100,6 +140,11 @@ export default {
       attributes: [],
       attribute: null,
       showError: false,
+      selectedType: null,
+      threshold: 0.0,
+      selectedNmae: null,
+      showAddFilter: false,
+      showEditFilter: false,
       errorHeader: "Error",
       errorMessage: "",
       showSpinner: false,
@@ -108,6 +153,24 @@ export default {
     };
   },
   methods: {
+    editFilter(e, tag, filter_name, type, value) {
+      this.selectedTag = tag
+      this.selectedNmae = filter_name
+      this.selectedType = type
+      this.threshold = value
+      this.showEditFilter = true;
+      e.preventDefault()
+    },
+    addFilter(e, tag) {
+      this.selectedTag = tag
+      this.showAddFilter = true;
+      e.preventDefault()
+    },
+    hideEditFilter() {
+      this.showAddFilter = false;
+      this.showEditFilter = false;
+      this.getSensor()
+    },
     hideErrorMessage() {
         this.showError = false;
     },
@@ -189,7 +252,9 @@ export default {
   },
   components: {
     Spinner,
-    OkModal
+    OkModal,
+    EditFilter,
+    AddFilter
   }
 };
 </script>
@@ -210,11 +275,11 @@ export default {
   border: rgb(169, 255, 202);
   background-color: white;
   position: fixed;
-  width: 500px;
-  height: 600px;
+  width: 600px;
+  height: 800px;
   top: 50%;
   left: 50%;
-  margin-top: -250px;
+  margin-top: -400px;
   margin-left: -250px;
   z-index: 100;
 }

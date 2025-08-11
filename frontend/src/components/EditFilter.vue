@@ -8,7 +8,7 @@
     />
     <Spinner v-if="showSpinner" />
     <div class="modal-window">
-      <div class="header">Adding new tag</div>
+      <div class="header">Editing of existing tag</div>
       <div class="body">
         <form class="login-form">
           <div class="form-group">
@@ -16,63 +16,30 @@
             <input
               type="text"
               class="form-control form-control-lg"
-              v-model="tag"
+              v-model="selectedTag"
               disabled
             />
           </div>
           <div class="form-group">
-            <label>Tag description</label>
+            <label>Filer name</label>
             <input
               type="text"
               class="form-control form-control-lg"
-              v-model="description"
+              v-model="selectedName"
+              disabled
             />
           </div>
           <div class="form-group">
-            <label>Master secret</label>
+            <label>Threshold</label>
             <input
               type="text"
               class="form-control form-control-lg"
-              v-model="secret"
+              v-model="selectedThreshold"
             />
-          </div>
-          <div class="form-group">
-            <label>Is public</label>
-            <select
-              class="form-select"
-              v-model="public_read"
-              aria-label="Public"
-            >
-              <option
-                value="1"
-              >
-                True
-              </option>
-              <option
-                value="0"
-              >
-                False
-              </option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Attribute to add</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              v-model="attribute"
-            />
-            <button class="btn btn-danger" @click="addAttribute">Add attribute</button>
-          </div>
-          <div class="form-group">
-            <label>Added attributes</label><br/>
-            <span v-for="a in attributes" v-bind:key="a" class="badge rounded-pill bg-danger">
-                {{a}} <a href="#" @click="removeAttribute(e, a)">X</a>
-            </span>
           </div>
           <div class="form-group" style="margin-top: 10px">
             <button @click="save" class="btn btn-dark btn-lg btn-block save">
-              Add tag
+              Update filter
             </button>
             <button @click="cancel" class="btn btn-dark btn-lg btn-block close">
               Cancel
@@ -90,41 +57,23 @@ import Spinner from "../components/Spinner.vue";
 import OkModal from "../components/OkModal.vue";
 
 export default {
-  name: "AddTag",
-  props: [],
+  name: "EditFilter",
+  props: ["tag", "name", "type", "threshold"],
   data() {
     return {
-      secret: null,
-      description: null,
-      public_read: false,
-      attributes: [],
-      attribute: null,
       showError: false,
       errorHeader: "Error",
       errorMessage: "",
-      showSpinner: false
+      showSpinner: false,
+      selectedTag: this.tag,
+      selectedName: this.name,
+      selectedType: this.type,
+      selectedThreshold: this.threshold
     };
   },
   methods: {
     hideErrorMessage() {
         this.showError = false;
-    },
-    addAttribute(e) {
-        if (this.attribute != null || this.attribute != "") {
-            this.attributes.push(this.attribute);    
-        }
-        this.attribute = ""
-        e.preventDefault();
-    },
-    removeAttribute(e, a) {
-        var n = []
-        for (var i = 0; i < this.attributes.length; i++) {
-            if (a != this.attributes[i]) {
-                n.push(this.attributes[i])
-            }
-        }
-        this.attributes = n;
-        e.preventDefault();
     },
     save(e) {
       this.showSpinner = true;
@@ -133,14 +82,12 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       };
-      var url = this.$BASE_URL + "/api/add_sensor/";
+      var url = this.$BASE_URL + "/api/add_or_update_sensor_alerts_filter/";
       axios
         .post(url, { 
             tag: this.tag, 
-            description: this.description,  
-            is_public_read: this.public_read,
-            secret: this.secret,
-            attributes: this.attributes
+            filter: this.selectedType,
+            value: this.selectedThreshold
         }, { headers })
         .then((response) => {
           this.showSpinner = false;

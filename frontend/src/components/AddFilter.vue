@@ -8,7 +8,7 @@
     />
     <Spinner v-if="showSpinner" />
     <div class="modal-window">
-      <div class="header">Adding new tag</div>
+      <div class="header">Add filter to tag</div>
       <div class="body">
         <form class="login-form">
           <div class="form-group">
@@ -16,63 +16,37 @@
             <input
               type="text"
               class="form-control form-control-lg"
-              v-model="tag"
+              v-model="selectedTag"
               disabled
             />
           </div>
           <div class="form-group">
-            <label>Tag description</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              v-model="description"
-            />
-          </div>
-          <div class="form-group">
-            <label>Master secret</label>
-            <input
-              type="text"
-              class="form-control form-control-lg"
-              v-model="secret"
-            />
-          </div>
-          <div class="form-group">
-            <label>Is public</label>
+            <label>Filer name</label>
             <select
               class="form-select"
-              v-model="public_read"
-              aria-label="Public"
+              v-model="selectedFilter"
+              aria-label="Filter name"
             >
               <option
-                value="1"
+                v-for="f in filters"
+                v-bind:value="f.filter"
+                v-bind:key="f.filter_name"
               >
-                True
-              </option>
-              <option
-                value="0"
-              >
-                False
+                {{ f.filter_name }}
               </option>
             </select>
           </div>
           <div class="form-group">
-            <label>Attribute to add</label>
+            <label>Threshold</label>
             <input
               type="text"
               class="form-control form-control-lg"
-              v-model="attribute"
+              v-model="threshold"
             />
-            <button class="btn btn-danger" @click="addAttribute">Add attribute</button>
-          </div>
-          <div class="form-group">
-            <label>Added attributes</label><br/>
-            <span v-for="a in attributes" v-bind:key="a" class="badge rounded-pill bg-danger">
-                {{a}} <a href="#" @click="removeAttribute(e, a)">X</a>
-            </span>
           </div>
           <div class="form-group" style="margin-top: 10px">
             <button @click="save" class="btn btn-dark btn-lg btn-block save">
-              Add tag
+              Update filter
             </button>
             <button @click="cancel" class="btn btn-dark btn-lg btn-block close">
               Cancel
@@ -90,15 +64,14 @@ import Spinner from "../components/Spinner.vue";
 import OkModal from "../components/OkModal.vue";
 
 export default {
-  name: "AddTag",
-  props: [],
+  name: "AddFilter",
+  props: ["tag"],
   data() {
     return {
-      secret: null,
-      description: null,
-      public_read: false,
-      attributes: [],
-      attribute: null,
+      selectedTag: this.tag,
+      selectedFilter: null,
+      threshold: 0.0,
+      filters: [],
       showError: false,
       errorHeader: "Error",
       errorMessage: "",
@@ -109,22 +82,26 @@ export default {
     hideErrorMessage() {
         this.showError = false;
     },
-    addAttribute(e) {
-        if (this.attribute != null || this.attribute != "") {
-            this.attributes.push(this.attribute);    
-        }
-        this.attribute = ""
-        e.preventDefault();
-    },
-    removeAttribute(e, a) {
-        var n = []
-        for (var i = 0; i < this.attributes.length; i++) {
-            if (a != this.attributes[i]) {
-                n.push(this.attributes[i])
-            }
-        }
-        this.attributes = n;
-        e.preventDefault();
+    getFilters() {
+      this.showSpinner = true;
+      const token = sessionStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      };
+      var url = this.$BASE_URL + "/api/get_filters/";
+      axios
+        .post(url, { 
+        }, { headers })
+        .then((response) => {
+          this.showSpinner = false;     
+          if (response.data.result) {
+            this.filters = response.data.result
+          } else {
+            this.showError = true;
+            this.errorMessage = response.data.reason
+          }
+        });
     },
     save(e) {
       this.showSpinner = true;
@@ -133,14 +110,12 @@ export default {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       };
-      var url = this.$BASE_URL + "/api/add_sensor/";
+      var url = this.$BASE_URL + "/api/add_or_update_sensor_alerts_filter/";
       axios
         .post(url, { 
-            tag: this.tag, 
-            description: this.description,  
-            is_public_read: this.public_read,
-            secret: this.secret,
-            attributes: this.attributes
+            tag: this.selectedTag, 
+            filter: this.selectedFilter,
+            value: this.threshold
         }, { headers })
         .then((response) => {
           this.showSpinner = false;
@@ -161,6 +136,7 @@ export default {
     }
   },
   mounted() {
+    this.getFilters()
   },
   components: {
     Spinner,
