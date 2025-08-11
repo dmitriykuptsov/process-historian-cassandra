@@ -58,6 +58,16 @@ create table if not exists Alerts(
         ON DELETE CASCADE
 );
 
+create table if not exists AlertsFilter (
+    tag varchar(100) not null,
+    type int not null,
+    value decimal not null default 0.0,
+    PRIMARY KEY(tag, type),
+    FOREIGN KEY (tag)
+        REFERENCES Sensors(tag) 
+        ON DELETE CASCADE
+);
+
 
 
 INSERT INTO Users(username, password, salt) VALUES("admin", SHA2(CONCAT("password", "DanWocsAtAv8"), 256), "DanWocsAtAv8");
