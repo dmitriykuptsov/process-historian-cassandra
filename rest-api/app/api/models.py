@@ -40,4 +40,4 @@ class SensorFilter(db.Model):
 
 	tag                = db.Column(db.String(100), nullable = False, primary_key = True)
 	type               = db.Column(db.Integer, nullable = False, primary_key = True)
-	value              = db.Column(db.Decimal, nullable = False, default = 0.0)
+	value              = db.Column(db.Float, nullable = False, default = 0.0)

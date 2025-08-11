@@ -68,6 +68,4 @@ create table if not exists AlertsFilter (
         ON DELETE CASCADE
 );
 
-
-
 INSERT INTO Users(username, password, salt) VALUES("admin", SHA2(CONCAT("password", "DanWocsAtAv8"), 256), "DanWocsAtAv8");
