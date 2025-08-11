@@ -26,7 +26,7 @@ from app.utils.utils import is_valid_session, hash_password, get_subject
 from app.utils.utils import hash_string
 from app.utils.utils import hash_bytes
 from app.utils.utils import compute_hmac
-
+from app.utils.filters import Filter
 # Datetime utilities
 from datetime import date
 from datetime import datetime
@@ -50,6 +50,7 @@ from json import dumps
 from app.api.models import Sensors
 from app.api.models import Attributes
 from app.api.models import SensorAlerts
+from app.api.models import SensorFilter
 
 # Import SQLAlchemy functions
 from sqlalchemy.sql import func
@@ -93,6 +94,10 @@ def add_data():
         if not sensor_:
             continue
 
+        filters = db.session.query(SensorFilter).\
+            filter(db.and_(SensorFilter.tag.ilike(tag))). \
+                first()
+
         insert_points = session.prepare('INSERT INTO ph (tag, date_bucket, ts, value) VALUES (?, ?, ?, ?)')
         batch = BatchStatement(consistency_level=ConsistencyLevel.QUORUM)
 
@@ -107,6 +112,16 @@ def add_data():
         for p in data[tag]["data"]:
             try:
                 date_object = datetime.fromtimestamp(float(p["timestamp"]) / 1000)
+                for f in filters:
+                    if Filter.check_filter(f.type, p["value"], f.value):
+                        alert = SensorAlerts()
+                        alert.tag = tag
+                        alert.timestamp = date_object
+                        alert.type = f.type
+                        alert.comment = None
+                        db.session.add(alert)
+                        db.session.commit()
+                
                 bucket = date_object.strftime("%Y-%m-%d")
                 batch.add(insert_points,(tag, bucket, p["timestamp"],p["value"]))
             except Exception as e:
@@ -134,7 +149,7 @@ def add_alert():
 
     for sensor in data.keys():
         tag = sensor
-        
+
         sensor_ = db.session.query(Sensors).\
             filter(db.and_(Sensors.tag.ilike(tag))). \
                 first()
@@ -149,7 +164,6 @@ def add_alert():
         if hmac != compute_hmac(data_b, sensor_.master_secret):
             print("Invalid HMAC")
             continue
-
         for p in data[tag]["data"]:
             try:
                 date_object = datetime.fromtimestamp(float(p["timestamp"]) / 1000)

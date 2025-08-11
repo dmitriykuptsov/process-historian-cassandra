@@ -25,6 +25,7 @@ from app import config_ as config
 from app.utils.utils import is_valid_session, hash_password, get_subject
 from app.utils.utils import hash_string
 from app.utils.utils import hash_bytes
+from app.utils import filters
 
 # Datetime utilities
 from datetime import date
@@ -49,6 +50,7 @@ from app.api.models import Attributes
 from app.auth.models import Users
 from app.api.models import SensorPermissions
 from app.api.models import SensorAlerts
+from app.api.models import SensorFilter
 
 # Import SQLAlchemy functions
 from sqlalchemy.sql import func
@@ -280,6 +282,7 @@ def get_sensor_own():
     if sensor:
         if sensor.owner == username:
             attribues = db.session.query(Attributes).filter(db.and_(Attributes.tag == sensor.tag)).all()
+            filters_ = db.session.query(SensorFilter).filter(db.and_(SensorFilter.tag == sensor.tag)).all()
             s = {
                 "tag": sensor.tag,
                 "description": sensor.description,
@@ -289,10 +292,157 @@ def get_sensor_own():
             }
             for a in attribues:
                 s["attributes"].append(a.attribute)
+            s["filters"] = []
+            for f in filters_:
+                s["filters"].append({
+                        "filter_name": filters.Filter.filter_to_human_readable(f.type),
+                        "filter": f.type,
+                        "value": f.value
+                    })
 
     return jsonify({
         "auth_fail": False,
         "result": s
+    })
+
+
+@mod_api.route("/get_filters/", methods=["POST"])
+def get_filters():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    
+    s = []
+    for f in Filters.ALLOWED_FILTERS:
+        s.append({
+            "filter_name": filters.Filter.filter_to_human_readable(f),
+            "filter": f
+            })
+    
+    return jsonify({
+        "auth_fail": False,
+        "result": s
+    })
+
+@mod_api.route("/get_sensor_alerts_filter/", methods=["POST"])
+def get_sensor_alerts_filter():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    username = get_subject(request, config)
+
+    tag = data.get("tag", "")
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag))). \
+            first()
+
+    s = {}
+    if sensor:
+        permission = db.session.query(SensorPermissions).\
+            filter(db.and_(SensorPermissions.tag == sensor.tag, SensorPermissions.username == username)). \
+                first()
+        f = []
+        if permission:
+            filters = db.session.query(SensorFilter).filter(db.and_(SensorFilter.tag == sensor.tag)).all()
+            for a in filters:
+                f.append({
+                    "tag": a.tag,
+                    "type": a.type,
+                    "value": a.value
+                })
+
+    return jsonify({
+        "auth_fail": False,
+        "result": f
+    })
+
+@mod_api.route("/add_or_update_sensor_alerts_filter/", methods=["POST"])
+def add_or_update_sensor_alerts_filter():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    data = request.get_json(force=True)
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    username = get_subject(request, config)
+
+    tag = data.get("tag", "")
+    filter = data.get("filter", filters.FILTER_NONE)
+    value = data.get("value", 0.0)
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag))). \
+            first()
+
+    if sensor:
+        if sensor.owner != username:
+            return jsonify({
+                "auth_fail": False,
+                "result": False
+            })
+        if filter in filters.ALLOWED_FILTERS:
+            f = db.session.query(SensorFilter).\
+                filter(db.and_(SensorFilter.tag.ilike(tag), SensorFilter.type == filter)). \
+                    first()
+            if f:
+                f.value = value
+                db.session.commit()
+            else:
+                f = SensorFilter()
+                f.tag = tag
+                f.type = filter
+                f.value = value
+                db.session.add(f)
+                db.session.commit()
+
+
+
+    return jsonify({
+        "auth_fail": False,
+        "result": True
+    })
+
+@mod_api.route("/delete_sensor_alerts_filter/", methods=["POST"])
+def delete_sensor_alerts_filter():
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
+    
+    data = request.get_json(force=True)
+
+    if not data:
+        return jsonify({"auth_fail": False, "result": False})
+    
+    username = get_subject(request, config)
+
+    tag = data.get("tag", "")
+    filter = data.get("filter", filters.FILTER_NONE)
+
+    sensor = db.session.query(Sensors).\
+        filter(db.and_(Sensors.tag.ilike(tag))). \
+            first()
+
+    if sensor:
+        
+        if sensor.owner != username:
+            return jsonify({
+                "auth_fail": False,
+                "result": False
+            })
+        
+        f = db.session.query(SensorFilter).\
+            filter(db.and_(SensorFilter.tag.ilike(tag), \
+                           SensorFilter.type == filter)). \
+                first()
+        if f:
+            db.session.delete(f)
+            db.session.commit()
+
+    return jsonify({
+        "auth_fail": False,
+        "result": True
     })
 
 @mod_api.route("/get_sensors_own/", methods=["POST"])

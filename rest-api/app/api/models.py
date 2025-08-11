@@ -33,3 +33,11 @@ class SensorAlerts(db.Model):
 	timestamp          = db.Column(db.Date, nullable = False, primary_key = True)
 	type               = db.Column(db.Integer, nullable = False, primary_key = True)
 	comment            = db.Column(db.String(100), nullable = True, default = "")
+
+class SensorFilter(db.Model):
+	
+	__tablename__      = "AlertsFilter"
+
+	tag                = db.Column(db.String(100), nullable = False, primary_key = True)
+	type               = db.Column(db.Integer, nullable = False, primary_key = True)
+	value              = db.Column(db.Decimal, nullable = False, default = 0.0)
