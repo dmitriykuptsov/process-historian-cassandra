@@ -201,12 +201,12 @@ export default {
     format_date(date) {
       if (!date) return;
       try {
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-        const seconds = date.getSeconds();
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth() + 1;
+        const day = date.getUTCDate();
+        const hours = date.getUTCHours();
+        const minutes = date.getUTCMinutes();
+        const seconds = date.getUTCSeconds();
         var fd = year + "-" + this.comlete_number(month) + 
           "-" + this.comlete_number(day) + " " + this.comlete_number(hours) + ":" + 
           this.comlete_number(minutes) + ":" + this.comlete_number(seconds)
