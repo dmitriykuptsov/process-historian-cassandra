@@ -972,7 +972,7 @@ def get_data_raw_with_aggregation():
             if not start:
                 start = row[0].timestamp()
             if aggregation == "avg":
-                if row[0].timestamp() - start < interval * 60:
+                if row[0].timestamp() - start < interval * 60 * 1000:
                     sum += row[1]
                     n += 1
                 else:
@@ -993,7 +993,7 @@ def get_data_raw_with_aggregation():
                     n = 1
             elif aggregation == "max":
                 if row[0].timestamp() - start < interval * 60 * 1000:
-                    if max and max > row[1]:
+                    if max and max < row[1]:
                         max = row[1]
                     if not max:
                         max = row[1]
