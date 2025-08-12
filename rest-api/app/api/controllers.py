@@ -780,8 +780,8 @@ def get_alerts():
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
 
-    ts_start = int(start.timestamp() * 1000)
-    ts_end = int(end.timestamp() * 1000)
+    ts_start = float(start.timestamp())
+    ts_end = float(end.timestamp())
 
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
@@ -975,17 +975,16 @@ def get_data_raw_with_aggregation():
             if not start:
                 start = row[0].timestamp()
             if aggregation == "avg":
-                if row[0].timestamp() - start < interval * 60 * 1000:
+                if row[0].timestamp() - start < interval * 60:
                     sum += row[1]
                     n += 1
                 else:
-                    print("0-0-0-0-0-0")
                     result.append({"timestamp": start, "value": sum / n})
                     start = row[0].timestamp()
                     sum = row[1]
                     n = 1
             elif aggregation == "min":
-                if row[0].timestamp() - start < interval * 60 * 1000:
+                if row[0].timestamp() - start < interval * 60:
                     if min and min > row[1]:
                         min = row[1]
                     if not min:
@@ -996,7 +995,7 @@ def get_data_raw_with_aggregation():
                     min = row[1]
                     n = 1
             elif aggregation == "max":
-                if row[0].timestamp() - start < interval * 60 * 1000:
+                if row[0].timestamp() - start < interval * 60:
                     if max and max < row[1]:
                         max = row[1]
                     if not max:
@@ -1009,13 +1008,13 @@ def get_data_raw_with_aggregation():
             else:
                 result.append({"timestamp": row[0].timestamp(), "value": row[1]})
             
-        if aggregation == "avg":
-            if n > 0:
-                result.append({"timestamp": start, "value": sum / n})
-        elif aggregation == "min":
-            result.append({"timestamp": start, "value": min})
-        elif aggregation == "max":
-            result.append({"timestamp": start, "value": max})
+    if aggregation == "avg":
+        if n > 0:
+            result.append({"timestamp": start, "value": sum / n})
+    elif aggregation == "min":
+        result.append({"timestamp": start, "value": min})
+    elif aggregation == "max":
+        result.append({"timestamp": start, "value": max})
             
     return jsonify({
         "auth_fail": False,
