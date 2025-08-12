@@ -721,8 +721,8 @@ def get_data_raw():
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
 
-    ts_start = float(start.timestamp() * 1000)
-    ts_end = float(end.timestamp() * 1000)
+    ts_start = int(start.timestamp() * 1000)
+    ts_end = int(end.timestamp() * 1000)
 
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
@@ -829,8 +829,8 @@ def get_data_raw_public():
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
 
-    ts_start = float(start.timestamp() * 1000)
-    ts_end = float(end.timestamp() * 1000)
+    ts_start = int(start.timestamp() * 1000)
+    ts_end = int(end.timestamp() * 1000)
 
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
@@ -934,8 +934,8 @@ def get_data_raw_with_aggregation():
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
 
-    ts_start = float(start.timestamp() * 1000)
-    ts_end = float(end.timestamp() * 1000)
+    ts_start = int(start.timestamp() * 1000)
+    ts_end = int(end.timestamp() * 1000)
 
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
