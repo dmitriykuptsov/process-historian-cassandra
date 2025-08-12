@@ -184,7 +184,8 @@ def add_permission_to_sensor():
 
 @mod_api.route("/remove_permission_to_sensor/", methods=["POST"])
 def remove_permission_to_sensor():
-
+    if not is_valid_session(request, config):
+        return jsonify({"auth_fail": True})
     data = request.get_json(force=True)
     if not data:
         return jsonify({"auth_fail": False, "result": False})
