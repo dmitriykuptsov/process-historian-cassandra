@@ -979,6 +979,7 @@ def get_data_raw_with_aggregation():
                     sum += row[1]
                     n += 1
                 else:
+                    print("0-0-0-0-0-0")
                     result.append({"timestamp": start, "value": sum / n})
                     start = row[0].timestamp()
                     sum = row[1]
