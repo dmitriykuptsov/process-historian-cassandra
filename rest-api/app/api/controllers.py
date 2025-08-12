@@ -924,7 +924,7 @@ def get_data_raw_with_aggregation():
     tag = data.get("tag", None)
 
     aggregation = data.get("aggregation", "raw")
-    interval = date.get("interval", 5)
+    interval = data.get("interval", 5)
 
     format_string = "%Y-%m-%d %H:%M:%S"
 
@@ -1008,8 +1008,14 @@ def get_data_raw_with_aggregation():
             else:
                 result.append({"timestamp": row[0].timestamp(), "value": row[1]})
             
+        if aggregation == "avg":
+            if n > 0:
+                result.append({"timestamp": start, "value": sum / n})
+        elif aggregation == "min":
+            result.append({"timestamp": start, "value": min})
+        elif aggregation == "max":
+            result.append({"timestamp": start, "value": max})
             
-
     return jsonify({
         "auth_fail": False,
         "result": result
