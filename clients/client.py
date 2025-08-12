@@ -19,6 +19,7 @@ class PHClient():
                                    json={"username": username, 
                                          "password": password}, 
                                     headers={"Accept": "application/json"})
+            print(result.text)
             d = loads(result.text)
             self.token = d.get("token", None)
             return d.get("success", False)
@@ -81,6 +82,15 @@ class PHClient():
                     json={"tag": tag, "start": start, "end": end},
                     headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
+        d = loads(result.text)
+        return d["result"]
+    
+    def get_data_with_aggregation(self, tag, start, end, aggr = "avg", interval = 360):
+        result = self.session.post(self.url + "/api/get_data_raw_with_aggregation/",
+                    json={"tag": tag, "start": start, "end": end, "aggregation": aggr, "interval": interval},
+                    headers={"Accept": "application/json",
+                            "Authorization": "Bearer " + self.token})
+        print(result.text)
         d = loads(result.text)
         return d["result"]
 
@@ -177,12 +187,12 @@ class PHClient():
         return d["result"]  
 
 
-#client = PHClient("https://process-historian.strangebit.io/")
-client = PHClient("http://192.168.1.244:5006/")
-client.open("admin", "pass")
+client = PHClient("https://process-historian.strangebit.io/")
+#client = PHClient("http://192.168.1.244:5006/")
+client.open("admin", "cicurdyifyuWyadvurlyondaizJibOts")
 #print(client.create_tag("demo_temperature_tag", "Demo sensor", "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz", ["demo", "temperature"]))
 
-
+"""
 data = []
 current_datetime = datetime.now(UTC)
 value = ALERT_TYPES["MAX_OVERSHOOT"]
@@ -191,9 +201,10 @@ data.append({
     "type": value,
     "comment": "This is a comment"
 })
+"""
 
-client.add_alert_batch("alert_tag_demo", data, "123456")
-print(client.get_alerts("alert_tag_demo", "2025-08-09 00:00:00", "2025-08-13 00:00:00"))
+#client.add_alert_batch("alert_tag_demo", data, "123456")
+print(client.get_data_with_aggregation("demo_temperature_tag", "2025-08-09 00:00:00", "2025-08-13 00:00:00", "avg", 360))
 
 """
 import subprocess
