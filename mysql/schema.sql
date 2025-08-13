@@ -68,4 +68,45 @@ create table if not exists AlertsFilter (
         ON DELETE CASCADE
 );
 
+create table if not exists Tasks (
+    id int auto_increment not null,
+    owner varchar(100) not null,
+    ts timestamp not null,
+    task_id  int not null,
+    PRIMARY KEY(id, owner),
+    FOREIGN KEY (owner)
+        REFERENCES Users(username) 
+        ON DELETE CASCADE
+);
+
+create table if not exists TaskParameters (
+    id int not null,
+    owner varchar(100) not null,
+    parameter varchar(100) not null,
+    value varchar(1000) not null,
+    PRIMARY KEY(id, owner, parameter),
+    FOREIGN KEY (owner)
+        REFERENCES Users(username) 
+        ON DELETE CASCADE,
+    FOREIGN KEY (id, owner)
+        REFERENCES Tasks(id, owner) 
+        ON DELETE CASCADE
+);
+
+create table if not exists TaskTags (
+    id int not null,
+    owner varchar(100) not null,
+    tag varchar(100) not null,
+    PRIMARY KEY(id, owner, tag),
+    FOREIGN KEY (owner)
+        REFERENCES Users(username) 
+        ON DELETE CASCADE,
+    FOREIGN KEY (tag)
+        REFERENCES Sensors(tag) 
+        ON DELETE CASCADE,
+    FOREIGN KEY (id, owner)
+        REFERENCES Tasks(id, owner) 
+        ON DELETE CASCADE
+);
+
 INSERT INTO Users(username, password, salt) VALUES("admin", SHA2(CONCAT("password", "DanWocsAtAv8"), 256), "DanWocsAtAv8");
