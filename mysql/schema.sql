@@ -73,6 +73,7 @@ create table if not exists Tasks (
     owner varchar(100) not null,
     ts timestamp not null,
     task_id  int not null,
+    status int not null,
     PRIMARY KEY(id, owner),
     FOREIGN KEY (owner)
         REFERENCES Users(username) 
