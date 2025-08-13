@@ -17,7 +17,6 @@
               type="text"
               class="form-control form-control-lg"
               v-model="tag"
-              disabled
             />
           </div>
           <div class="form-group">
