@@ -118,7 +118,7 @@ def add_data():
                         alert.tag = tag
                         alert.timestamp = date_object
                         alert.type = f.type
-                        alert.comment = "From ingestion"
+                        alert.comment = str(p["value"])
                         db.session.add(alert)
                         db.session.commit()
                 
