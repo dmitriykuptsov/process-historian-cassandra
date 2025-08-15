@@ -72,13 +72,7 @@
             :options="chartOptions"
           />
         </div>
-        <div v-if="chartDataCpu.length > 1">
-          <GChart
-            type="LineChart"
-            :data="chartDataCpu"
-            :options="chartOptionsCpu"
-          />
-        </div>
+        
         <div v-if="chartData.length <= 1">
           <p style="font-weight: bold; font-size: 20px;">No data available for the selected period and tag</p>
         </div>
@@ -124,6 +118,16 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <p class="demo_title">
+          Demo temperature reading - CPU usage of NanoPi R2S
+        </p>
+        <div v-if="chartDataCpu.length > 1">
+          <GChart
+            type="LineChart"
+            :data="chartDataCpu"
+            :options="chartOptionsCpu"
+          />
         </div>
       </div>
       <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">
@@ -299,7 +303,7 @@ export default {
       start.setHours(start.getHours() - 6);
       this.start = start;
       this.end = end;
-      const data = {tag: "demo_temperature_tag", start: this.format_date(start), end: this.format_date(end)}
+      const data = {tag: "cpu_sensor_nano_pi_r2s", start: this.format_date(start), end: this.format_date(end)}
       const headers = {
         "Content-Type": "application/json"
       };
