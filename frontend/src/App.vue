@@ -253,7 +253,7 @@ export default {
         .post(this.$BASE_URL + "/api/get_alerts_public/", data, { headers })
         .then((response) => {
             if (response.data.result.length >= 1) {
-              this.alerts = response.data.result[response.data.result.length - 1];
+              this.alerts = [response.data.result[response.data.result.length - 1]];
             }
         });
     },
