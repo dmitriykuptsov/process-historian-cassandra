@@ -169,7 +169,7 @@ export default {
         }
       });
     },
-    comlete_number(n) {
+    complete_number(n) {
       if (n < 10) {
         return "0" + n
       } else {
@@ -185,9 +185,9 @@ export default {
         const hours = date.getUTCHours();
         const minutes = date.getUTCMinutes();
         const seconds = date.getUTCSeconds();
-        var fd = year + "-" + this.comlete_number(month) + 
-          "-" + this.comlete_number(day) + " " + this.comlete_number(hours) + ":" + 
-          this.comlete_number(minutes) + ":" + this.comlete_number(seconds)
+        var fd = year + "-" + this.complete_number(month) + 
+          "-" + this.complete_number(day) + " " + this.complete_number(hours) + ":" + 
+          this.complete_number(minutes) + ":" + this.complete_number(seconds)
         return fd
       } catch(e) {
         return ""
