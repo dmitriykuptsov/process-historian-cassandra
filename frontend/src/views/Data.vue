@@ -207,6 +207,7 @@ export default {
         .then((response) => {
             this.data = response.data.result;
             this.chartData = [['Date', 'Value']];
+            this.histogramData = [['Measurement']],
             this.sum = 0;
             this.mean = 0;
             this.min = 1000000;

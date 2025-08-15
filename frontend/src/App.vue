@@ -72,6 +72,13 @@
             :options="chartOptions"
           />
         </div>
+        <div v-if="chartDataCpu.length > 1">
+          <GChart
+            type="LineChart"
+            :data="chartDataCpu"
+            :options="chartOptionsCpu"
+          />
+        </div>
         <div v-if="chartData.length <= 1">
           <p style="font-weight: bold; font-size: 20px;">No data available for the selected period and tag</p>
         </div>
@@ -156,13 +163,24 @@ export default {
       chartData: [['Date', 'Value']],
       chartOptions: {
         title: 'Temperature sensor demo real-time data',
-        width: document.getElementById("demo"),
         hAxis: {
           title: 'Date',
           format: 'MMM d, y', // Example date format
         },
         vAxis: {
           title: 'Temperature, Celcius',
+        },
+        legend: { position: 'bottom' },
+      },
+      chartDataCpu: [['Date', 'Value']],
+      chartOptionsCpu: {
+        title: 'CPU usage real-time data',
+        hAxis: {
+          title: 'Date',
+          format: 'MMM d, y', // Example date format
+        },
+        vAxis: {
+          title: 'CPU, %',
         },
         legend: { position: 'bottom' },
       }
@@ -275,6 +293,33 @@ export default {
             this.std = Math.sqrt(this.std)
         });
     },
+    getDemoTagDataCpu() {
+      var start = new Date();
+      var end = new Date()
+      start.setHours(start.getHours() - 6);
+      this.start = start;
+      this.end = end;
+      const data = {tag: "demo_temperature_tag", start: this.format_date(start), end: this.format_date(end)}
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      axios
+        .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
+        .then((response) => {
+            this.data = response.data.result;
+            this.chartDataCpu = [['Date', 'Value']];
+            this.sum = 0;
+            this.mean = 0;
+            this.min = 1000000;
+            this.max = -1000000;
+            this.n = 0
+            this.std = 0
+            
+            for (var i = 0; i < this.data.length; i++) {
+              this.chartDataCpu.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+            }
+        });
+    },
     logout() {
       sessionStorage.setItem("token", null);
       this.isAuthenticated = false;
@@ -289,6 +334,7 @@ export default {
     pollDemoTagData() {
       this.polling = setInterval(() => {
         this.getDemoTagData()
+        this.getDemoTagDataCpu()
       }, 60000);
     },
     setActive(item) {
@@ -308,6 +354,7 @@ export default {
     this.checkAuth();
     this.pollAuthData();
     this.pollDemoTagData();
+    this.getDemoTagDataCpu();
     this.$router.push("/sensors");
     this.initializeSelectedMenu();
   },
