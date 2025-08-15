@@ -129,6 +129,16 @@
             :options="chartOptionsCpu"
           />
         </div>
+        <p class="demo_title">
+          Inet usage of NanoPi R2S
+        </p>
+        <div v-if="chartDataInet.length > 1">
+          <GChart
+            type="LineChart"
+            :data="chartDataInet"
+            :options="chartOptionsInet"
+          />
+        </div>
       </div>
       <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">
         Powered by StrangeBit company
@@ -165,6 +175,7 @@ export default {
       start: Date(),
       end: Date(),
       chartData: [['Date', 'Value']],
+      chartDataInet: [['Date', 'Value']],
       chartOptions: {
         title: 'Temperature sensor demo real-time data',
         hAxis: {
@@ -185,6 +196,17 @@ export default {
         },
         vAxis: {
           title: 'CPU, %',
+        },
+        legend: { position: 'bottom' },
+      },
+      chartOptionsInet: {
+        title: 'Internet traffic out real-time data',
+        hAxis: {
+          title: 'Date',
+          format: 'MMM d, y', // Example date format
+        },
+        vAxis: {
+          title: 'Traffic out, KB',
         },
         legend: { position: 'bottom' },
       }
@@ -327,6 +349,33 @@ export default {
             }
         });
     },
+    getDemoTagDataInet() {
+      var start = new Date();
+      var end = new Date()
+      start.setHours(start.getHours() - 6);
+      this.start = start;
+      this.end = end;
+      const data = {tag: "public_traffic_kbytes_per_second", start: this.format_date(start), end: this.format_date(end)}
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      axios
+        .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
+        .then((response) => {
+            this.data = response.data.result;
+            this.chartDataInet = [['Date', 'Value']];
+            this.sum = 0;
+            this.mean = 0;
+            this.min = 1000000;
+            this.max = -1000000;
+            this.n = 0
+            this.std = 0
+            
+            for (var i = 0; i < this.data.length; i++) {
+              this.chartDataInet.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+            }
+        });
+    },
     logout() {
       sessionStorage.setItem("token", null);
       this.isAuthenticated = false;
@@ -342,6 +391,8 @@ export default {
       this.polling = setInterval(() => {
         this.getDemoTagData()
         this.getDemoTagDataCpu()
+        this.getLastAlerts();
+        this.getDemoTagDataInet();
       }, 60000);
     },
     setActive(item) {
@@ -355,8 +406,9 @@ export default {
     },
   },
   mounted() {
-    this.getLastAlerts();
     this.getDemoTagData();
+    this.getLastAlerts();
+    this.getDemoTagDataInet();
     this.checkAuth();
     this.pollAuthData();
     this.pollDemoTagData();
