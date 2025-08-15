@@ -120,7 +120,7 @@
           </table>
         </div>
         <p class="demo_title">
-          Demo temperature reading - CPU usage of NanoPi R2S
+          CPU usage of NanoPi R2S
         </p>
         <div v-if="chartDataCpu.length > 1">
           <GChart
