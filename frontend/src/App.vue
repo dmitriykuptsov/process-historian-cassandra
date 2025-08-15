@@ -241,9 +241,10 @@ export default {
       //
       var start = new Date();
       var end = new Date()
-      start.setHours(start.getHours() - 6);
+      start.setHours(start.getHours() - 1);
       this.start = start;
       this.end = end;
+
       const data = {tag: "demo_temperature_tag", start: this.format_date(start), end: this.format_date(end)}
       const headers = {
         "Content-Type": "application/json"
@@ -251,7 +252,9 @@ export default {
       axios
         .post(this.$BASE_URL + "/api/get_alerts_public/", data, { headers })
         .then((response) => {
-            this.alerts = response.data.result;
+            if (response.data.result.length >= 1) {
+              this.alerts = response.data.result[response.data.result.length - 1];
+            }
         });
     },
     getDemoTagData() {
