@@ -393,7 +393,7 @@ export default {
         this.getDemoTagDataCpu()
         this.getLastAlerts();
         this.getDemoTagDataInet();
-      }, 60000);
+      }, 10000);
     },
     setActive(item) {
       this.menuItemsActive["sensors"] = false;
