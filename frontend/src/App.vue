@@ -200,13 +200,13 @@ export default {
         legend: { position: 'bottom' },
       },
       chartOptionsInet: {
-        title: 'Internet traffic out real-time data',
+        title: 'Internet traffic in real-time data',
         hAxis: {
           title: 'Date',
           format: 'MMM d, y', // Example date format
         },
         vAxis: {
-          title: 'Traffic out, KB',
+          title: 'Traffic in, KB',
         },
         legend: { position: 'bottom' },
       }
