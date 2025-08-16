@@ -282,7 +282,7 @@ export default {
       //
       var start = new Date();
       var end = new Date()
-      start.setHours(start.getHours() - 1);
+      start.setHours(start.getHours() - 6);
       this.start = start;
       this.end = end;
 
