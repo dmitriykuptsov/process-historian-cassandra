@@ -130,7 +130,7 @@
           />
         </div>
         <p class="demo_title">
-          Inet usage of NanoPi R2S
+          Inet usage by NanoPi R2S
         </p>
         <div v-if="chartDataInet.length > 1">
           <GChart
@@ -208,7 +208,7 @@ export default {
         legend: { position: 'bottom' },
       },
       chartOptionsInet: {
-        title: 'Internet traffic in real-time data',
+        title: 'Internet traffic in, real-time data',
         hAxis: {
           title: 'Date',
           format: 'MMM d, y', // Example date format
@@ -219,7 +219,7 @@ export default {
         legend: { position: 'bottom' },
       },
       chartOptionsInetOut: {
-        title: 'Internet traffic in real-time data',
+        title: 'Internet traffic out, real-time data',
         hAxis: {
           title: 'Date',
           format: 'MMM d, y', // Example date format
