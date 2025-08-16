@@ -337,12 +337,6 @@ export default {
         .then((response) => {
             this.data = response.data.result;
             this.chartDataCpu = [['Date', 'Value']];
-            this.sum = 0;
-            this.mean = 0;
-            this.min = 1000000;
-            this.max = -1000000;
-            this.n = 0
-            this.std = 0
             
             for (var i = 0; i < this.data.length; i++) {
               this.chartDataCpu.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
@@ -364,12 +358,6 @@ export default {
         .then((response) => {
             this.data = response.data.result;
             this.chartDataInet = [['Date', 'Value']];
-            this.sum = 0;
-            this.mean = 0;
-            this.min = 1000000;
-            this.max = -1000000;
-            this.n = 0
-            this.std = 0
             
             for (var i = 0; i < this.data.length; i++) {
               this.chartDataInet.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
