@@ -139,6 +139,13 @@
             :options="chartOptionsInet"
           />
         </div>
+        <div v-if="chartDataInetOut.length > 1">
+          <GChart
+            type="LineChart"
+            :data="chartDataInetOut"
+            :options="chartOptionsInetOut"
+          />
+        </div>
       </div>
       <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">
         Powered by StrangeBit company
@@ -176,6 +183,7 @@ export default {
       end: Date(),
       chartData: [['Date', 'Value']],
       chartDataInet: [['Date', 'Value']],
+      chartDataInetOut: [['Date', 'Value']],
       chartOptions: {
         title: 'Temperature sensor demo real-time data',
         hAxis: {
@@ -207,6 +215,17 @@ export default {
         },
         vAxis: {
           title: 'Traffic in, KB',
+        },
+        legend: { position: 'bottom' },
+      },
+      chartOptionsInetOut: {
+        title: 'Internet traffic in real-time data',
+        hAxis: {
+          title: 'Date',
+          format: 'MMM d, y', // Example date format
+        },
+        vAxis: {
+          title: 'Traffic out, KB',
         },
         legend: { position: 'bottom' },
       }
@@ -349,7 +368,7 @@ export default {
       start.setHours(start.getHours() - 6);
       this.start = start;
       this.end = end;
-      const data = {tag: "public_traffic_kbytes_per_second", start: this.format_date(start), end: this.format_date(end)}
+      const data = {tag: "mikrotik_bytes_in", start: this.format_date(start), end: this.format_date(end)}
       const headers = {
         "Content-Type": "application/json"
       };
@@ -361,6 +380,27 @@ export default {
             
             for (var i = 0; i < this.data.length; i++) {
               this.chartDataInet.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+            }
+        });
+    },
+    getDemoTagDataInetOut() {
+      var start = new Date();
+      var end = new Date()
+      start.setHours(start.getHours() - 6);
+      this.start = start;
+      this.end = end;
+      const data = {tag: "mikrotik_bytes_out", start: this.format_date(start), end: this.format_date(end)}
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      axios
+        .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
+        .then((response) => {
+            this.data = response.data.result;
+            this.chartDataInetOut = [['Date', 'Value']];
+            
+            for (var i = 0; i < this.data.length; i++) {
+              this.chartDataInetOut.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
             }
         });
     },
@@ -381,6 +421,7 @@ export default {
         this.getDemoTagDataCpu()
         this.getLastAlerts();
         this.getDemoTagDataInet();
+        this.getDemoTagDataInetOut();
       }, 10000);
     },
     setActive(item) {
@@ -397,6 +438,7 @@ export default {
     this.getDemoTagData();
     this.getLastAlerts();
     this.getDemoTagDataInet();
+    this.getDemoTagDataInetOut();
     this.checkAuth();
     this.pollAuthData();
     this.pollDemoTagData();
