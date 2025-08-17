@@ -456,24 +456,31 @@ export default {
 
 <style scoped>
 
-pre {
-    position: absolute;
-    bottom: 300px;
-    width: 400px;
-    background-color: #f4f4f4;
-    color: darkgreen;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 10px;
-    overflow-x: auto; 
+@media (min-width: 768px) {
+  pre {
+      position: absolute;
+      bottom: 300px;
+      width: 400px;
+      background-color: #f4f4f4;
+      color: darkgreen;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 10px;
+      overflow-x: auto; 
+  }
+
+  code {
+      font-size: 8px;
+      color: darkgreen;
+      font-family: "Courier New", Courier, monospace;
+  }
 }
 
-code {
-    font-size: 8px;
-    color: darkgreen;
-    font-family: "Courier New", Courier, monospace;
+@media (max-width: 768px) {
+  pre {
+    display: none;
+  }
 }
-
 .strangebit {
   position: absolute;
   left: 45%;

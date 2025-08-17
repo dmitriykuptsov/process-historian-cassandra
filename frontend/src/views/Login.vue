@@ -111,32 +111,67 @@ h3 {
   text-align: center;
 }
 
-.login-div {
-  position: absolute;
+@media (min-width: 768px) {
+  .login-div {
+    position: absolute;
 
-  width: 450px;
-  height: 300px;
+    width: 450px;
+    height: 300px;
 
-  /* Center form on page horizontally & vertically */
-  top: 300px;
-  left: 50%;
-  margin-top: -150px;
-  margin-left: -225px;
+    /* Center form on page horizontally & vertically */
+    top: 300px;
+    left: 50%;
+    margin-top: -150px;
+    margin-left: -225px;
+  }
+
+  .login-form {
+    width: 450px;
+    height: 300px;
+
+    background: white;
+    border-radius: 10px;
+
+    margin: 0;
+    padding: 0;
+  }
+
+  .login-text {
+    margin: 10% auto;
+    width: 900px;
+  }
 }
 
-.login-form {
-  width: 450px;
-  height: 300px;
+@media (max-width: 768px) {
+  .login-text {
+    margin-left: 50%;
+    margin-top: 10%;
+    width: 100%;
+  }
 
-  background: white;
-  border-radius: 10px;
+  .login-div {
+    position: absolute;
 
-  margin: 0;
-  padding: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Center form on page horizontally & vertically */
+    top: 450px;
+    margin-top: -300px;
+  }
+
+  .login-form {
+    width: 100%;
+    height: 100%;
+
+    background: white;
+    border-radius: 10px;
+
+    margin: 0;
+    padding: 0;
+  }
 }
 
-.login-text {
-  margin: 10% auto;
-  width: 900px;
-}
+
+
 </style>
