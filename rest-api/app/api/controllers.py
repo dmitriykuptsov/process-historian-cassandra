@@ -480,6 +480,7 @@ def get_sensors_own():
                 "description": sensor.description,
                 "secret": sensor.master_secret,
                 "is_public": True if sensor.is_public_read == 0x1 else False,
+                "unit": sensor.unit,
                 "attributes": []
             }
             for a in attribues:
