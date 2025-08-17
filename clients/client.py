@@ -185,39 +185,3 @@ class PHClient():
         
         d = loads(result.text)
         return d["result"]  
-
-
-client = PHClient("https://process-historian.strangebit.io/")
-#client = PHClient("http://192.168.1.244:5006/")
-client.open("admin", "cicurdyifyuWyadvurlyondaizJibOts")
-#print(client.create_tag("demo_temperature_tag", "Demo sensor", "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz", ["demo", "temperature"]))
-
-"""
-data = []
-current_datetime = datetime.now(UTC)
-value = ALERT_TYPES["MAX_OVERSHOOT"]
-data.append({
-    "timestamp": current_datetime.timestamp() * 1000,
-    "type": value,
-    "comment": "This is a comment"
-})
-"""
-
-#client.add_alert_batch("alert_tag_demo", data, "123456")
-print(client.get_data_with_aggregation("demo_temperature_tag", "2025-08-09 00:00:00", "2025-08-13 00:00:00", "avg", 360))
-
-"""
-import subprocess
-while True:
-    data = []
-    current_datetime = datetime.now(UTC)
-    process = subprocess.Popen(["cat", " /sys/class/thermal/thermal_zone0/temp"], stdout=subprocess.PIPE, text=True)
-    output, errors = process.communicate()
-    #value = float(output)/1000
-    value = 10.2
-    data.append({
-        "timestamp": current_datetime.timestamp() * 1000,
-        "value": value
-    })
-    client.add_data_batch("CO2_sensor_outside", data, "mudCewofalEjNacsyivHothfuikcewdyaicAbbighravOladHottOcisfadEgNaz")
-"""
