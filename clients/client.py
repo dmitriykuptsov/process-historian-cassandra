@@ -27,9 +27,6 @@ class PHClient():
             return True
 
     def __compute_hmac__(self, data, key):
-        """
-        Computes the HMAC of the data
-        """
         h = HMAC.new(key.encode("ASCII"), digestmod=SHA256)
         h.update(data.encode("ASCII"))
         return h.hexdigest()
