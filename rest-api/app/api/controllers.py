@@ -291,6 +291,7 @@ def get_sensor_own():
                 "description": sensor.description,
                 "secret": sensor.master_secret,
                 "is_public": True if sensor.is_public_read == 0x1 else False,
+                "unit": sensor.unit,
                 "attributes": []
             }
             for a in attribues:
@@ -560,6 +561,7 @@ def add_sensor():
     tag = data.get("tag", None)
     description = data.get("description", None)
     secret = data.get("secret", None)
+    unit = data.get("unit", None)
     is_public_read = data.get("is_public_read", 0)
 
     if is_public_read == "0":
@@ -582,6 +584,7 @@ def add_sensor():
     sensor.description = description
     sensor.master_secret = secret
     sensor.owner = owner
+    sensor.unit = unit
     sensor.is_public_read = is_public_read
     db.session.add(sensor)
     db.session.commit()
@@ -619,6 +622,7 @@ def update_sensor():
     tag = data.get("tag", None)
     description = data.get("description", None)
     secret = data.get("secret", None)
+    unit = data.get("unit", None)
     is_public_read = data.get("is_public_read", "0")
 
     if is_public_read == "0":
@@ -648,6 +652,7 @@ def update_sensor():
     sensor.description = description
     sensor.master_secret = secret
     sensor.is_public_read = is_public_read
+    sensor.unit = unit
     db.session.commit()
 
     attributes_ = db.session.query(Attributes).\

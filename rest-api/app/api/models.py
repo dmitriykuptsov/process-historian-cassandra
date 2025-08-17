@@ -8,6 +8,7 @@ class Sensors(db.Model):
 	description        = db.Column(db.String(1000), nullable=True)
 	owner              = db.Column(db.String(100), nullable = False)
 	is_public_read     = db.Column(db.Integer, default=False)
+	unit               = db.Column(db.String(10), default="")
 
 class Attributes(db.Model):
 	__tablename__      = "Attributes"
