@@ -195,6 +195,8 @@ export default {
           title: 'Temperature, Celcius',
         },
         legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
       },
       chartDataCpu: [['Date', 'Value']],
       chartOptionsCpu: {
@@ -207,6 +209,8 @@ export default {
           title: 'CPU, %',
         },
         legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
       },
       chartOptionsInet: {
         title: 'Internet traffic in, real-time data',
@@ -218,6 +222,8 @@ export default {
           title: 'Traffic in, KB',
         },
         legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
       },
       chartOptionsInetOut: {
         title: 'Internet traffic out, real-time data',
@@ -229,6 +235,8 @@ export default {
           title: 'Traffic out, KB',
         },
         legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
       }
     };
   },
