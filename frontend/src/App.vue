@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main" style="background-color: cadetblue;">
     <div v-if="isAuthenticated">
       <header>
         <div class="title">
@@ -36,8 +36,8 @@
 
       <router-view></router-view>
     </div>
-    <div v-if="!isAuthenticated">
-      <img class="strangebit" src="@/assets/distributed-database.png" alt="Database"/>
+    <div v-if="!isAuthenticated" style="background-color: lightblue;">
+      <img class="strangebit" src="@/assets/distributed-database.png" alt="Database" style="z-index: 10000;"/>
       <Login />
       
       <div class="demo" id="demo">
@@ -85,7 +85,7 @@
             Time: {{ format_date(new Date(a.timestamp)) }} Type: {{a.type}} Critical value: {{a.comment}}
           </span>
         </div>
-        <div>
+        <div style="background-color: #f4f4f4;">
           <p class="summary_title" style="font-weight: bold;">
             Summary statistics
           </p>
@@ -456,6 +456,9 @@ export default {
 </script>
 
 <style scoped>
+.main {
+  background-color: black;
+}
 
 @media (min-width: 768px) {
   pre {
@@ -473,7 +476,8 @@ export default {
   }
 
   code {
-      font-size: 8px;
+      font-size: 16px;
+      font-weight: bold;
       color: darkgreen;
       font-family: "Courier New", Courier, monospace;
   }
@@ -497,7 +501,8 @@ export default {
   }
 
   code {
-      font-size: 8px;
+      font-size: 16px;
+      font-weight: bold;
       color: darkgreen;
       font-family: "Courier New", Courier, monospace;
   }
@@ -616,7 +621,6 @@ export default {
   position: fixed;
   top: 0%;
   z-index: 1;
-  background: #ffffff;
   text-align: center;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

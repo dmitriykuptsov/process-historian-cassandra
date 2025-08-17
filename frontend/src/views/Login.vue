@@ -1,7 +1,7 @@
 <template>
-  <div class="login-main">
+  <div class="login-main" style="background-color: #f1f2c2;">
     
-    <div class="login-div">
+    <div class="login-div" style="background-color: #f1f2c2;">
       <div class="login-text" style="left: -50%; top: 0%; position: relative;">
         <h3>
           Time-series storage and analytics service
@@ -13,7 +13,7 @@
         v-if="showDsModal"
         v-on:confirm="closeOkModal"
       />
-      <form class="login-form">
+      <form class="login-form" style="background-color: #f1f2c2;">
         <div class="form-group">
           <label>Username</label>
           <div class="input-group input-group-lg">
@@ -172,6 +172,8 @@ h3 {
   }
 }
 
-
+.login-main {
+  background-color: cadetblue;
+}
 
 </style>
