@@ -39,24 +39,25 @@
     <div v-if="!isAuthenticated">
       <img class="strangebit" src="@/assets/distributed-database.png" alt="Database"/>
       <Login />
-      <pre><code>
-      # Python client usage example
-      client = PHClient("https://process-historian.strangebit.io/")
-      # Open the connection and authenticate
-      client.open("admin", "password")
-      data = []
-      # Add data points
-      current_datetime = datetime.now(UTC)
-      value = random.randint(0, 100)
-      data.append({
-        "timestamp": current_datetime.timestamp() * 1000,
-        "value": value
-      })
-      # Store the data in the cloud
-      client.add_data_batch("demo_temperature_tag", data, "master-secret")
-
-      </code></pre>
+      
       <div class="demo" id="demo">
+        <pre><code>
+        # Python client usage example
+        client = PHClient("https://process-historian.strangebit.io/")
+        # Open the connection and authenticate
+        client.open("admin", "password")
+        data = []
+        # Add data points
+        current_datetime = datetime.now(UTC)
+        value = random.randint(0, 100)
+        data.append({
+          "timestamp": current_datetime.timestamp() * 1000,
+          "value": value
+        })
+        # Store the data in the cloud
+        client.add_data_batch("demo_temperature_tag", data, "master-secret")
+
+        </code></pre>
         <p class="demo_title">
           Demo temperature reading from the internal sensor of NanoPi R2S
           Tag: demo_temperature_tag, start time: {{format_date(start)}}, end time: {{format_date(end)}} UTC
@@ -458,15 +459,17 @@ export default {
 
 @media (min-width: 768px) {
   pre {
-      position: absolute;
-      bottom: 300px;
-      width: 400px;
+      width: 100%;
+      margin-left: 10px;
+      font-size: 19px;
       background-color: #f4f4f4;
       color: darkgreen;
       border: 1px solid #ccc;
+      font-weight: bold;
       padding: 10px;
-      border-radius: 10px;
+      border-radius: 20px;
       overflow-x: auto; 
+      z-index: -100;
   }
 
   code {
@@ -478,7 +481,25 @@ export default {
 
 @media (max-width: 768px) {
   pre {
-    display: none;
+      /*position: absolute;*/
+      /*bottom: 300px;*/
+      width: 100%;
+      margin-left: 10px;
+      font-size: 19px;
+      background-color: #f4f4f4;
+      color: darkgreen;
+      border: 1px solid #ccc;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 20px;
+      overflow-x: auto; 
+      z-index: -100;
+  }
+
+  code {
+      font-size: 8px;
+      color: darkgreen;
+      font-family: "Courier New", Courier, monospace;
   }
 }
 .strangebit {
