@@ -41,6 +41,9 @@
                 Tag description
               </th>
               <th scope="col">
+                Unit
+              </th>
+              <th scope="col">
                 Is public
               </th>
               <th scope="col">
@@ -62,6 +65,7 @@
               <th scope="row">{{index + 1}}</th>
               <td>{{s.tag}}</td>
               <td>{{s.description}}</td>
+              <td>{{s.unit}}</td>
               <td>
                 <span class="badge rounded-pill bg-danger">
                   {{s.is_public != 0}}

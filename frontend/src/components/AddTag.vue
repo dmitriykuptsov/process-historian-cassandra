@@ -28,6 +28,14 @@
             />
           </div>
           <div class="form-group">
+            <label>Tag unit</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              v-model="unit"
+            />
+          </div>
+          <div class="form-group">
             <label>Master secret</label>
             <input
               type="text"
@@ -95,6 +103,7 @@ export default {
     return {
       secret: null,
       description: null,
+      unit: null,
       public_read: false,
       attributes: [],
       attribute: null,
@@ -139,6 +148,7 @@ export default {
             description: this.description,  
             is_public_read: this.public_read,
             secret: this.secret,
+            unit: this.unit,
             attributes: this.attributes
         }, { headers })
         .then((response) => {

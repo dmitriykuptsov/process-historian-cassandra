@@ -44,6 +44,14 @@
             />
           </div>
           <div class="form-group">
+            <label>Tag unit</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              v-model="sensor.unit"
+            />
+          </div>
+          <div class="form-group">
             <label>Master secret</label>
             <input
               type="text"
@@ -248,6 +256,7 @@ export default {
             description: this.sensor.description,  
             is_public_read: this.sensor.is_public,
             secret: this.sensor.secret,
+            unit: this.sensor.unit,
             attributes: this.sensor.attributes
         }, { headers })
         .then((response) => {

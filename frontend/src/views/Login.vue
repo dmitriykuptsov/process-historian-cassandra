@@ -1,7 +1,7 @@
 <template>
-  <div class="login-main">
+  <div class="login-main" style="background-color: #f1f2c2;">
     
-    <div class="login-div">
+    <div class="login-div" style="background-color: #f1f2c2;">
       <div class="login-text" style="left: -50%; top: 0%; position: relative;">
         <h3>
           Time-series storage and analytics service
@@ -13,7 +13,7 @@
         v-if="showDsModal"
         v-on:confirm="closeOkModal"
       />
-      <form class="login-form">
+      <form class="login-form" style="background-color: #f1f2c2;">
         <div class="form-group">
           <label>Username</label>
           <div class="input-group input-group-lg">
@@ -111,32 +111,69 @@ h3 {
   text-align: center;
 }
 
-.login-div {
-  position: absolute;
+@media (min-width: 768px) {
+  .login-div {
+    position: absolute;
 
-  width: 450px;
-  height: 300px;
+    width: 450px;
+    height: 300px;
 
-  /* Center form on page horizontally & vertically */
-  top: 300px;
-  left: 50%;
-  margin-top: -150px;
-  margin-left: -225px;
+    /* Center form on page horizontally & vertically */
+    top: 300px;
+    left: 50%;
+    margin-top: -150px;
+    margin-left: -225px;
+  }
+
+  .login-form {
+    width: 450px;
+    height: 300px;
+
+    background: white;
+    border-radius: 10px;
+
+    margin: 0;
+    padding: 0;
+  }
+
+  .login-text {
+    margin: 10% auto;
+    width: 900px;
+  }
 }
 
-.login-form {
-  width: 450px;
-  height: 300px;
+@media (max-width: 768px) {
+  .login-text {
+    margin-left: 50%;
+    margin-top: 10%;
+    width: 100%;
+  }
 
-  background: white;
-  border-radius: 10px;
+  .login-div {
+    position: absolute;
 
-  margin: 0;
-  padding: 0;
+    width: 100%;
+    height: 100%;
+
+    /* Center form on page horizontally & vertically */
+    top: 450px;
+    margin-top: -300px;
+  }
+
+  .login-form {
+    width: 100%;
+    height: 100%;
+
+    background: white;
+    border-radius: 10px;
+
+    margin: 0;
+    padding: 0;
+  }
 }
 
-.login-text {
-  margin: 10% auto;
-  width: 900px;
+.login-main {
+  background-color: cadetblue;
 }
+
 </style>

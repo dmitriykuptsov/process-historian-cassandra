@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main" style="background-color: cadetblue;">
     <div v-if="isAuthenticated">
       <header>
         <div class="title">
@@ -36,27 +36,28 @@
 
       <router-view></router-view>
     </div>
-    <div v-if="!isAuthenticated">
-      <img class="strangebit" src="@/assets/distributed-database.png" alt="Database"/>
+    <div v-if="!isAuthenticated" style="background-color: lightblue;">
+      <img class="strangebit" src="@/assets/distributed-database.png" alt="Database" style="z-index: 10000;"/>
       <Login />
-      <pre><code>
-      # Python client usage example
-      client = PHClient("https://process-historian.strangebit.io/")
-      # Open the connection and authenticate
-      client.open("admin", "password")
-      data = []
-      # Add data points
-      current_datetime = datetime.now(UTC)
-      value = random.randint(0, 100)
-      data.append({
-        "timestamp": current_datetime.timestamp() * 1000,
-        "value": value
-      })
-      # Store the data in the cloud
-      client.add_data_batch("demo_temperature_tag", data, "master-secret")
-
-      </code></pre>
+      
       <div class="demo" id="demo">
+        <pre><code>
+        # Python client usage example
+        client = PHClient("https://process-historian.strangebit.io/")
+        # Open the connection and authenticate
+        client.open("admin", "password")
+        data = []
+        # Add data points
+        current_datetime = datetime.now(UTC)
+        value = random.randint(0, 100)
+        data.append({
+          "timestamp": current_datetime.timestamp() * 1000,
+          "value": value
+        })
+        # Store the data in the cloud
+        client.add_data_batch("demo_temperature_tag", data, "master-secret")
+
+        </code></pre>
         <p class="demo_title">
           Demo temperature reading from the internal sensor of NanoPi R2S
           Tag: demo_temperature_tag, start time: {{format_date(start)}}, end time: {{format_date(end)}} UTC
@@ -72,6 +73,7 @@
             :options="chartOptions"
           />
         </div>
+        
         <div v-if="chartData.length <= 1">
           <p style="font-weight: bold; font-size: 20px;">No data available for the selected period and tag</p>
         </div>
@@ -83,7 +85,7 @@
             Time: {{ format_date(new Date(a.timestamp)) }} Type: {{a.type}} Critical value: {{a.comment}}
           </span>
         </div>
-        <div>
+        <div style="background-color: #f4f4f4;">
           <p class="summary_title" style="font-weight: bold;">
             Summary statistics
           </p>
@@ -117,6 +119,33 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <p class="demo_title">
+          CPU usage of NanoPi R2S
+        </p>
+        <div v-if="chartDataCpu.length > 1">
+          <GChart
+            type="LineChart"
+            :data="chartDataCpu"
+            :options="chartOptionsCpu"
+          />
+        </div>
+        <p class="demo_title">
+          Inet usage by NanoPi R2S
+        </p>
+        <div v-if="chartDataInet.length > 1">
+          <GChart
+            type="LineChart"
+            :data="chartDataInet"
+            :options="chartOptionsInet"
+          />
+        </div>
+        <div v-if="chartDataInetOut.length > 1">
+          <GChart
+            type="LineChart"
+            :data="chartDataInetOut"
+            :options="chartOptionsInetOut"
+          />
         </div>
       </div>
       <div style="position: absolute; top: 10px; left: 10px; font-weight: bold; font-size: 12px;">
@@ -154,9 +183,10 @@ export default {
       start: Date(),
       end: Date(),
       chartData: [['Date', 'Value']],
+      chartDataInet: [['Date', 'Value']],
+      chartDataInetOut: [['Date', 'Value']],
       chartOptions: {
         title: 'Temperature sensor demo real-time data',
-        width: document.getElementById("demo"),
         hAxis: {
           title: 'Date',
           format: 'MMM d, y', // Example date format
@@ -165,6 +195,48 @@ export default {
           title: 'Temperature, Celcius',
         },
         legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
+      },
+      chartDataCpu: [['Date', 'Value']],
+      chartOptionsCpu: {
+        title: 'CPU usage real-time data',
+        hAxis: {
+          title: 'Date',
+          format: 'MMM d, y', // Example date format
+        },
+        vAxis: {
+          title: 'CPU, %',
+        },
+        legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
+      },
+      chartOptionsInet: {
+        title: 'Internet traffic in, real-time data',
+        hAxis: {
+          title: 'Date',
+          format: 'MMM d, y', // Example date format
+        },
+        vAxis: {
+          title: 'Traffic in, KB',
+        },
+        legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
+      },
+      chartOptionsInetOut: {
+        title: 'Internet traffic out, real-time data',
+        hAxis: {
+          title: 'Date',
+          format: 'MMM d, y', // Example date format
+        },
+        vAxis: {
+          title: 'Traffic out, KB',
+        },
+        legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
       }
     };
   },
@@ -191,7 +263,7 @@ export default {
         }
       });
     },
-    comlete_number(n) {
+    complete_number(n) {
       if (n < 10) {
         return "0" + n
       } else {
@@ -207,13 +279,13 @@ export default {
         const hours = date.getUTCHours();
         const minutes = date.getUTCMinutes();
         const seconds = date.getUTCSeconds();
-        var fd = year + "-" + this.comlete_number(month) + 
-          "-" + this.comlete_number(day) + " " + this.comlete_number(hours) + ":" + 
-          this.comlete_number(minutes) + ":" + this.comlete_number(seconds)
+        var fd = year + "-" + this.complete_number(month) + 
+          "-" + this.complete_number(day) + " " + this.complete_number(hours) + ":" + 
+          this.complete_number(minutes) + ":" + this.complete_number(seconds)
         return fd
       } catch(e) {
         return ""
-      }      
+      }
     },
     getLastAlerts() {
       //
@@ -222,6 +294,7 @@ export default {
       start.setHours(start.getHours() - 6);
       this.start = start;
       this.end = end;
+
       const data = {tag: "demo_temperature_tag", start: this.format_date(start), end: this.format_date(end)}
       const headers = {
         "Content-Type": "application/json"
@@ -229,7 +302,9 @@ export default {
       axios
         .post(this.$BASE_URL + "/api/get_alerts_public/", data, { headers })
         .then((response) => {
-            this.alerts = response.data.result;
+            if (response.data.result.length >= 1) {
+              this.alerts = [response.data.result[response.data.result.length - 1]];
+            }
         });
     },
     getDemoTagData() {
@@ -275,6 +350,69 @@ export default {
             this.std = Math.sqrt(this.std)
         });
     },
+    getDemoTagDataCpu() {
+      var start = new Date();
+      var end = new Date()
+      start.setHours(start.getHours() - 6);
+      this.start = start;
+      this.end = end;
+      const data = {tag: "cpu_sensor_nano_pi_r2s", start: this.format_date(start), end: this.format_date(end)}
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      axios
+        .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
+        .then((response) => {
+            this.data = response.data.result;
+            this.chartDataCpu = [['Date', 'Value']];
+            
+            for (var i = 0; i < this.data.length; i++) {
+              this.chartDataCpu.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+            }
+        });
+    },
+    getDemoTagDataInet() {
+      var start = new Date();
+      var end = new Date()
+      start.setHours(start.getHours() - 6);
+      this.start = start;
+      this.end = end;
+      const data = {tag: "mikrotik_bytes_in", start: this.format_date(start), end: this.format_date(end)}
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      axios
+        .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
+        .then((response) => {
+            this.data = response.data.result;
+            this.chartDataInet = [['Date', 'Value']];
+            
+            for (var i = 0; i < this.data.length; i++) {
+              this.chartDataInet.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+            }
+        });
+    },
+    getDemoTagDataInetOut() {
+      var start = new Date();
+      var end = new Date()
+      start.setHours(start.getHours() - 6);
+      this.start = start;
+      this.end = end;
+      const data = {tag: "mikrotik_bytes_out", start: this.format_date(start), end: this.format_date(end)}
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      axios
+        .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
+        .then((response) => {
+            this.data = response.data.result;
+            this.chartDataInetOut = [['Date', 'Value']];
+            
+            for (var i = 0; i < this.data.length; i++) {
+              this.chartDataInetOut.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+            }
+        });
+    },
     logout() {
       sessionStorage.setItem("token", null);
       this.isAuthenticated = false;
@@ -289,7 +427,11 @@ export default {
     pollDemoTagData() {
       this.polling = setInterval(() => {
         this.getDemoTagData()
-      }, 60000);
+        this.getDemoTagDataCpu()
+        this.getLastAlerts();
+        this.getDemoTagDataInet();
+        this.getDemoTagDataInetOut();
+      }, 10000);
     },
     setActive(item) {
       this.menuItemsActive["sensors"] = false;
@@ -299,15 +441,17 @@ export default {
     initializeSelectedMenu() {
       this.menuItemsActive["sensors"] = true;
       this.menuItemsActive["data"] = false;
-      
     },
   },
   mounted() {
-    this.getLastAlerts();
     this.getDemoTagData();
+    this.getLastAlerts();
+    this.getDemoTagDataInet();
+    this.getDemoTagDataInetOut();
     this.checkAuth();
     this.pollAuthData();
     this.pollDemoTagData();
+    this.getDemoTagDataCpu();
     this.$router.push("/sensors");
     this.initializeSelectedMenu();
   },
@@ -320,25 +464,57 @@ export default {
 </script>
 
 <style scoped>
-
-pre {
-    position: absolute;
-    bottom: 300px;
-    width: 400px;
-    background-color: #f4f4f4;
-    color: darkgreen;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 10px;
-    overflow-x: auto; 
+.main {
+  background-color: black;
 }
 
-code {
-    font-size: 8px;
-    color: darkgreen;
-    font-family: "Courier New", Courier, monospace;
+@media (min-width: 768px) {
+  pre {
+      width: 100%;
+      margin-left: 10px;
+      font-size: 19px;
+      background-color: #f4f4f4;
+      color: darkgreen;
+      border: 1px solid #ccc;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 20px;
+      overflow-x: auto; 
+      z-index: -100;
+  }
+
+  code {
+      font-size: 16px;
+      font-weight: bold;
+      color: darkgreen;
+      font-family: "Courier New", Courier, monospace;
+  }
 }
 
+@media (max-width: 768px) {
+  pre {
+      /*position: absolute;*/
+      /*bottom: 300px;*/
+      width: 100%;
+      margin-left: 10px;
+      font-size: 19px;
+      background-color: #f4f4f4;
+      color: darkgreen;
+      border: 1px solid #ccc;
+      font-weight: bold;
+      padding: 10px;
+      border-radius: 20px;
+      overflow-x: auto; 
+      z-index: -100;
+  }
+
+  code {
+      font-size: 16px;
+      font-weight: bold;
+      color: darkgreen;
+      font-family: "Courier New", Courier, monospace;
+  }
+}
 .strangebit {
   position: absolute;
   left: 45%;
@@ -453,7 +629,6 @@ code {
   position: fixed;
   top: 0%;
   z-index: 1;
-  background: #ffffff;
   text-align: center;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

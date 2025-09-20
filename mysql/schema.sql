@@ -21,6 +21,7 @@ create table if not exists Sensors (
     description varchar(1000),
     master_secret varchar(200),
     is_public_read INT DEFAULT FALSE,
+    unit varchar(10) default "",
     owner varchar(100)
 );
 
