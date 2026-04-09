@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  cassandra:
+    image: cassandra:4.1
+    container_name: cassandra
+    hostname: cassandra
+    ports:
+      - "9042:9042"   # CQL port
+    environment:
+      CASSANDRA_CLUSTER_NAME: "ProcessHistorian"
+      CASSANDRA_DC: "DC1"
+      CASSANDRA_RACK: "RACK1"
+      MAX_HEAP_SIZE: "512M"
+      HEAP_NEWSIZE: "128M"
+    volumes:
+      - cassandra_data:/var/lib/cassandra
+    restart: unless-stopped
+
+volumes:
+  cassandra_data:
