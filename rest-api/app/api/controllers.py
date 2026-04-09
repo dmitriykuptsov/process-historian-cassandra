@@ -885,14 +885,6 @@ def get_alerts_public():
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
 
-<<<<<<< HEAD
-    ts_start = int(start.timestamp())
-    ts_end = int(end.timestamp())
-=======
-    ts_start = float(start.timestamp())
-    ts_end = float(end.timestamp())
->>>>>>> 22f2b5c6fa8839a21f6f833d21360a26e7a8a2bf
-
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
             first()
