@@ -48,6 +48,7 @@ class ApiKeys(db.Model):
 	__tablename__      = "ApiKeys"
 
 	apikey             = db.Column(db.String(200), nullable = False, primary_key = True)
+	owner              = db.Column(db.String(100), nullable = False, primary_key = True)
 
 class ApiKeysSensors(db.Model):
 	__tablename__      = "ApiKeysSensors"

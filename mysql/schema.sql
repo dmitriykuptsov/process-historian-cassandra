@@ -1,3 +1,5 @@
+drop database if exists ph;
+
 create database if not exists ph;
 
 use ph;
@@ -26,13 +28,19 @@ create table if not exists Sensors (
 );
 
 create table if not exists ApiKeys (
-    apikey VARCHAR(200) NOT NULL PRIMARY KEY
+    apikey VARCHAR(200) NOT NULL,
+    owner VARCHAR(100) NOT NULL,
+    PRIMARY KEY(apikey, owner),
+    FOREIGN KEY(owner) 
+        REFERENCES Users(username)
+        ON DELETE CASCADE
 );
 
 create table if not exists ApiKeysSensors (
     apikey VARCHAR(200) NOT NULL,
+    owner VARCHAR(100) NOT NULL,
     tag VARCHAR(100) NOT NULL,
-    PRIMARY KEY(apikey, tag),
+    PRIMARY KEY(apikey, owner, tag),
     FOREIGN KEY(tag) 
         REFERENCES Sensors(tag)
         ON DELETE CASCADE
