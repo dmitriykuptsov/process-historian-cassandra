@@ -749,7 +749,7 @@ def get_data_raw():
 
     buckets = []
     _ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
-    current_date = datetime.strftime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    current_date = datetime.strptime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
     while current_date <= _:
         formatted_date = current_date.strftime("%Y-%m-%d")
         buckets.append((tag, formatted_date))
@@ -854,7 +854,7 @@ def get_data_raw_public():
 
     buckets = []
     _ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
-    current_date = datetime.strftime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    current_date = datetime.strptime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
 
     while current_date <= _:
         formatted_date = current_date.strftime("%Y-%m-%d")
@@ -962,7 +962,7 @@ def get_data_raw_with_aggregation():
 
     buckets = []
     _ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
-    current_date = datetime.strftime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    current_date = datetime.strptime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
     while current_date <= _:
         formatted_date = current_date.strftime("%Y-%m-%d")
         buckets.append((tag, formatted_date))
