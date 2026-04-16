@@ -748,7 +748,7 @@ def get_data_raw():
 
 
     buckets = []
-	_ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    _ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
     current_date = datetime.strftime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
     while current_date <= end:
         formatted_date = current_date.strftime("%Y-%m-%d")
