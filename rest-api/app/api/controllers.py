@@ -947,8 +947,8 @@ def get_data_raw_with_aggregation():
 
 
     buckets = []
-    _ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
-    current_date = datetime.strptime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    _ = datetime.strptime(e.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    current_date = datetime.strptime(s.strftime("%Y-%m-%d"), "%Y-%m-%d")
     while current_date <= _:
         formatted_date = current_date.strftime("%Y-%m-%d")
         buckets.append((tag, formatted_date))
