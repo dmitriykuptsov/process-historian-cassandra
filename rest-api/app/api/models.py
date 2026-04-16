@@ -42,3 +42,15 @@ class SensorFilter(db.Model):
 	tag                = db.Column(db.String(100), nullable = False, primary_key = True)
 	type               = db.Column(db.Integer, nullable = False, primary_key = True)
 	value              = db.Column(db.Float, nullable = False, default = 0.0)
+
+
+class ApiKeys(db.Model):
+	__tablename__      = "ApiKeys"
+
+	apikey             = db.Column(db.String(200), nullable = False, primary_key = True)
+
+class ApiKeysSensors(db.Model):
+	__tablename__      = "ApiKeysSensors"
+
+	tag                = db.Column(db.String(100), nullable = False, primary_key = True)
+	apikey             = db.Column(db.String(200), nullable = False, primary_key = True)

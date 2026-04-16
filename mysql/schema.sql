@@ -1,4 +1,4 @@
-create database ph;
+create database if not exists ph;
 
 use ph;
 
@@ -7,22 +7,35 @@ create table if not exists Verifications (
     email varchar(100) NOT NULL,
     token varchar(256) NOT NULL,
     exp INT DEFAULT 0
-)
+);
 
 create table if not exists Users (
-    username varchar(100) PRIMARY KEY,
+    username varchar(100) NOT NULL PRIMARY KEY,
     email varchar(100),
     password varchar(200) NOT NULL,
     salt varchar(200) NOT NULL
 );
 
 create table if not exists Sensors (
-    tag varchar(100) PRIMARY KEY,
+    tag varchar(100) NOT NULL PRIMARY KEY,
     description varchar(1000),
     master_secret varchar(200),
     is_public_read INT DEFAULT FALSE,
     unit varchar(10) default "",
     owner varchar(100)
+);
+
+create table if not exists ApiKeys (
+    apikey VARCHAR(200) NOT NULL PRIMARY KEY
+);
+
+create table if not exists ApiKeysSensors (
+    apikey VARCHAR(200) NOT NULL,
+    tag VARCHAR(100) NOT NULL,
+    PRIMARY KEY(apikey, tag),
+    FOREIGN KEY(tag) 
+        REFERENCES Sensors(tag)
+        ON DELETE CASCADE
 );
 
 create table if not exists Attributes (
