@@ -727,6 +727,8 @@ def get_data_raw():
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
 
+	
+
     ts_start = float(start.timestamp())
     ts_end = float(end.timestamp())
 
@@ -746,7 +748,8 @@ def get_data_raw():
 
 
     buckets = []
-    current_date = start
+	_ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    current_date = datetime.strftime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
     while current_date <= end:
         formatted_date = current_date.strftime("%Y-%m-%d")
         buckets.append((tag, formatted_date))
@@ -757,7 +760,7 @@ def get_data_raw():
 
     for bucket in buckets:
         statement = SimpleStatement(query, consistency_level=ConsistencyLevel.QUORUM)
-        rows = session.execute(statement, (bucket[0], bucket[1], ts_start, ts_end, ))
+        rows = session.execute(statement, (bucket[0], bucket[1], start, end, ))
         for row in rows:
             result.append({"timestamp": row[0].timestamp(), "value": row[1]})
 
@@ -850,7 +853,9 @@ def get_data_raw_public():
 
 
     buckets = []
-    current_date = start
+    _ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    current_date = datetime.strftime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
+
     while current_date <= end:
         formatted_date = current_date.strftime("%Y-%m-%d")
         buckets.append((tag, formatted_date))
@@ -861,7 +866,7 @@ def get_data_raw_public():
 
     for bucket in buckets:
         statement = SimpleStatement(query, consistency_level=ConsistencyLevel.QUORUM)
-        rows = session.execute(statement, (bucket[0], bucket[1], ts_start, ts_end, ))
+        rows = session.execute(statement, (bucket[0], bucket[1], start, end, ))
         for row in rows:
             result.append({"timestamp": row[0].timestamp(), "value": row[1]})
 
@@ -956,7 +961,8 @@ def get_data_raw_with_aggregation():
 
 
     buckets = []
-    current_date = start
+    _ = datetime.strptime(end.strftime("%Y-%m-%d"), "%Y-%m-%d")
+    current_date = datetime.strftime(start.strftime("%Y-%m-%d"), "%Y-%m-%d")
     while current_date <= end:
         formatted_date = current_date.strftime("%Y-%m-%d")
         buckets.append((tag, formatted_date))
@@ -973,7 +979,7 @@ def get_data_raw_with_aggregation():
 
     for bucket in buckets:
         statement = SimpleStatement(query, consistency_level=ConsistencyLevel.QUORUM)
-        rows = session.execute(statement, (bucket[0], bucket[1], ts_start, ts_end, ))
+        rows = session.execute(statement, (bucket[0], bucket[1], start, end, ))
         for row in rows:
             if not start:
                 start = row[0].timestamp()
