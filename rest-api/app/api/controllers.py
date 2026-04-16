@@ -727,11 +727,6 @@ def get_data_raw():
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
 
-	
-
-    ts_start = float(start.timestamp())
-    ts_end = float(end.timestamp())
-
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
             first()
@@ -789,9 +784,6 @@ def get_alerts():
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
 
-    ts_start = int(start.timestamp())
-    ts_end = int(end.timestamp())
-
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
             first()
@@ -837,9 +829,6 @@ def get_data_raw_public():
 
     start = datetime.strptime(start, format_string)
     end = datetime.strptime(end, format_string)
-
-    ts_start = int(start.timestamp())
-    ts_end = int(end.timestamp())
 
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
@@ -939,11 +928,8 @@ def get_data_raw_with_aggregation():
     start = data.get("start", None)
     end = data.get("end", None)
 
-    start = datetime.strptime(start, format_string)
-    end = datetime.strptime(end, format_string)
-
-    ts_start = float(start.timestamp())
-    ts_end = float(end.timestamp())
+    s = datetime.strptime(start, format_string)
+    e = datetime.strptime(end, format_string)
 
     sensor = db.session.query(Sensors).\
         filter(db.and_(Sensors.tag.ilike(tag))). \
@@ -979,7 +965,7 @@ def get_data_raw_with_aggregation():
 
     for bucket in buckets:
         statement = SimpleStatement(query, consistency_level=ConsistencyLevel.QUORUM)
-        rows = session.execute(statement, (bucket[0], bucket[1], start, end, ))
+        rows = session.execute(statement, (bucket[0], bucket[1], s, e, ))
         for row in rows:
             if not start:
                 start = row[0].timestamp()
