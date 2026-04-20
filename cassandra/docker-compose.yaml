@@ -4,7 +4,6 @@ services:
   cassandra:
     image: cassandra:4.1
     container_name: cassandra
-    network_mode: host
     ports:
       - "9042:9042"   # CQL port
     environment:
