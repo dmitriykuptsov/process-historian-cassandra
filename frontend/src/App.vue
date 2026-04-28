@@ -131,20 +131,27 @@
           />
         </div>
         <p class="demo_title">
-          Inet usage by NanoPi R2S
+          Ambient temperature, humidity, pressure
         </p>
-        <div v-if="chartDataInet.length > 1">
+        <div v-if="chartDataTemp.length > 1">
           <GChart
             type="LineChart"
-            :data="chartDataInet"
-            :options="chartOptionsInet"
+            :data="chartDataTemp"
+            :options="chartOptionsTemp"
           />
         </div>
-        <div v-if="chartDataInetOut.length > 1">
+        <div v-if="chartDataHumidity.length > 1">
           <GChart
             type="LineChart"
-            :data="chartDataInetOut"
-            :options="chartOptionsInetOut"
+            :data="chartDataHumidity"
+            :options="chartOptionsHumidity"
+          />
+        </div>
+        <div v-if="chartDataPressure.length > 1">
+          <GChart
+            type="LineChart"
+            :data="chartDataPressure"
+            :options="chartOptionsPressure"
           />
         </div>
       </div>
@@ -182,9 +189,9 @@ export default {
       n: 0,
       start: Date(),
       end: Date(),
-      chartData: [['Date', 'Value']],
-      chartDataInet: [['Date', 'Value']],
-      chartDataInetOut: [['Date', 'Value']],
+      chartDataTemp: [['Date', 'Value']],
+      chartDataPressure: [['Date', 'Value']],
+      chartDataHumidity: [['Date', 'Value']],
       chartOptions: {
         title: 'Temperature sensor demo real-time data',
         hAxis: {
@@ -212,27 +219,40 @@ export default {
         colors: ['#a61c07'],
         backgroundColor: '#f1f2c2'
       },
-      chartOptionsInet: {
-        title: 'Internet traffic in, real-time data',
+      chartOptionsTemp: {
+        title: 'Ambient temperature, Celcius',
         hAxis: {
           title: 'Date',
           format: 'MMM d, y', // Example date format
         },
         vAxis: {
-          title: 'Traffic in, KB',
+          title: 'Ambient temperature, Celcius',
         },
         legend: { position: 'bottom' },
         colors: ['#a61c07'],
         backgroundColor: '#f1f2c2'
       },
-      chartOptionsInetOut: {
-        title: 'Internet traffic out, real-time data',
+      chartOptionsHumidity: {
+        title: 'Ambient humidity, %',
         hAxis: {
           title: 'Date',
           format: 'MMM d, y', // Example date format
         },
         vAxis: {
-          title: 'Traffic out, KB',
+          title: 'Ambient humidity, %',
+        },
+        legend: { position: 'bottom' },
+        colors: ['#a61c07'],
+        backgroundColor: '#f1f2c2'
+      },
+      chartOptionsPressure: {
+        title: 'Ambient pressure, hPa',
+        hAxis: {
+          title: 'Date',
+          format: 'MMM d, y', // Example date format
+        },
+        vAxis: {
+          title: 'Ambient pressure, hPa',
         },
         legend: { position: 'bottom' },
         colors: ['#a61c07'],
@@ -371,13 +391,13 @@ export default {
             }
         });
     },
-    getDemoTagDataInet() {
+    getDemoTagDataPressure() {
       var start = new Date();
       var end = new Date()
       start.setHours(start.getHours() - 6);
       this.start = start;
       this.end = end;
-      const data = {tag: "mikrotik_bytes_in", start: this.format_date(start), end: this.format_date(end)}
+      const data = {tag: "ambient_pressure_tag", start: this.format_date(start), end: this.format_date(end)}
       const headers = {
         "Content-Type": "application/json"
       };
@@ -385,20 +405,20 @@ export default {
         .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
         .then((response) => {
             this.data = response.data.result;
-            this.chartDataInet = [['Date', 'Value']];
+            this.chartDataPressure = [['Date', 'Value']];
             
             for (var i = 0; i < this.data.length; i++) {
-              this.chartDataInet.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+              this.chartDataPressure.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
             }
         });
     },
-    getDemoTagDataInetOut() {
+    getDemoTagDataHumidity() {
       var start = new Date();
       var end = new Date()
       start.setHours(start.getHours() - 6);
       this.start = start;
       this.end = end;
-      const data = {tag: "mikrotik_bytes_out", start: this.format_date(start), end: this.format_date(end)}
+      const data = {tag: "ambient_humidity_tag", start: this.format_date(start), end: this.format_date(end)}
       const headers = {
         "Content-Type": "application/json"
       };
@@ -406,10 +426,31 @@ export default {
         .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
         .then((response) => {
             this.data = response.data.result;
-            this.chartDataInetOut = [['Date', 'Value']];
+            this.chartDataHumidity = [['Date', 'Value']];
             
             for (var i = 0; i < this.data.length; i++) {
-              this.chartDataInetOut.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+              this.chartDataHumidity.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
+            }
+        });
+    },
+    getDemoTagDataTemp() {
+      var start = new Date();
+      var end = new Date()
+      start.setHours(start.getHours() - 6);
+      this.start = start;
+      this.end = end;
+      const data = {tag: "ambient_temperature_tag", start: this.format_date(start), end: this.format_date(end)}
+      const headers = {
+        "Content-Type": "application/json"
+      };
+      axios
+        .post(this.$BASE_URL + "/api/get_data_raw_public/", data, { headers })
+        .then((response) => {
+            this.data = response.data.result;
+            this.chartDataTemp = [['Date', 'Value']];
+            
+            for (var i = 0; i < this.data.length; i++) {
+              this.chartDataTemp.push([new Date(this.data[i]["timestamp"] * 1000), this.data[i]["value"]]);
             }
         });
     },
@@ -426,11 +467,12 @@ export default {
     },
     pollDemoTagData() {
       this.polling = setInterval(() => {
-        this.getDemoTagData()
-        this.getDemoTagDataCpu()
+        this.getDemoTagData();
+        this.getDemoTagDataCpu();
         this.getLastAlerts();
-        this.getDemoTagDataInet();
-        this.getDemoTagDataInetOut();
+        this.getDemoTagDataTemp();
+        this.getDemoTagDataHumidity();
+        this.getDemoTagDataPressure();
       }, 10000);
     },
     setActive(item) {
@@ -446,8 +488,9 @@ export default {
   mounted() {
     this.getDemoTagData();
     this.getLastAlerts();
-    this.getDemoTagDataInet();
-    this.getDemoTagDataInetOut();
+    this.getDemoTagDataTemp();
+    this.getDemoTagDataHumidity();
+    this.getDemoTagDataPressure();
     this.checkAuth();
     this.pollAuthData();
     this.pollDemoTagData();
