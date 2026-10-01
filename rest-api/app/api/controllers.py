@@ -154,7 +154,7 @@ def add_permission_to_sensor():
     owner = get_subject(request, config)
 
     sensor = db.session.query(Sensors).\
-        filter(db.and_(Sensors.tag == tag)). \
+        filter(db.and_(Sensors.tag == tag, Sensors.owner == owner)). \
             first()
     
     if not sensor:
@@ -196,7 +196,7 @@ def remove_permission_to_sensor():
     owner = get_subject(request, config)
 
     sensor = db.session.query(Sensors).\
-        filter(db.and_(Sensors.tag == tag)). \
+        filter(db.and_(Sensors.tag == tag, Sensors.owner == owner)). \
             first()
     
     if not sensor:
