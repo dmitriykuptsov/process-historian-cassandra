@@ -19,7 +19,6 @@ class PHClient():
                                    json={"username": username, 
                                          "password": password}, 
                                     headers={"Accept": "application/json"})
-            print(result.text)
             d = loads(result.text)
             self.token = d.get("token", None)
             return d.get("success", False)
@@ -87,7 +86,6 @@ class PHClient():
                     json={"tag": tag, "start": start, "end": end, "aggregation": aggr, "interval": interval},
                     headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
-        print(result.text)
         d = loads(result.text)
         return d["result"]
 
@@ -95,7 +93,6 @@ class PHClient():
         result = self.session.post(self.url + "/api/get_data_raw_public/",
                     json={"tag": tag, "start": start, "end": end},
                     headers={"Accept": "application/json"})
-        print(result.text)
         d = loads(result.text)
         return d["result"]
     
@@ -104,7 +101,6 @@ class PHClient():
                     json={"tag": tag, "start": start, "end": end},
                     headers={"Accept": "application/json",
                             "Authorization": "Bearer " + self.token})
-        print(result.text)
         d = loads(result.text)
         return d["result"]
     
