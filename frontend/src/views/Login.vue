@@ -1,6 +1,5 @@
 <template>
-  <div class="login-main" style="background-color: #f1f2c2;">
-    
+  <div class="login-main" style="background-color: #f1f2c2;">  
     <div class="login-div" style="background-color: #f1f2c2;">
       <div class="login-text" style="left: -50%; top: 0%; position: relative;">
         <h3>

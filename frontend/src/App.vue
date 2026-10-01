@@ -189,6 +189,7 @@ export default {
       n: 0,
       start: Date(),
       end: Date(),
+      chartData: [],
       chartDataTemp: [['Date', 'Value']],
       chartDataPressure: [['Date', 'Value']],
       chartDataHumidity: [['Date', 'Value']],

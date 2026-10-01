@@ -6,7 +6,7 @@ import os
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 
 # Define the database 
-SQLALCHEMY_DATABASE_URI = "mysql://ph:password@192.168.1.245/ph"
+SQLALCHEMY_DATABASE_URI = "mysql://ph:password@127.0.0.1/ph"
 
 DATABASE_CONNECT_OPTIONS = {}
 
@@ -36,5 +36,5 @@ SERVER_NONCE = "udOtJatnaweedlyhoicHubjabmywuShrakkanacDekveClukDas;shrardAnusAj
 JWT_VALIDITY_IN_DAYS = 30
 
 # Cassandra configuration
-CASSANDRA_NODES = ["192.168.1.245"]
+CASSANDRA_NODES = ["127.0.0.1"]
 CASSANDRA_KEYSPACE = "ph"
